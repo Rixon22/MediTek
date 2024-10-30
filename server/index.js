@@ -1,20 +1,17 @@
+// index.js
+const express = require('express');
 const routes = require('./api/endpoints');
 
-const express = require('express');
 const app = express();
-const port = 3001;
-const cors = require('cors');
+const PORT = 3001;
 
+// Middleware para parsear JSON
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
-app.use(cors({
-    origin: 'http://localhost:5173',
-    methods: ['GET', 'POST'],
-}));
+// Usar las rutas
+app.use('/api', routes);
 
-app.use('/', routes);
-
-app.listen(port, () => {
-    console.log(`Server listening at http://localhost:${port}`);
+// Iniciar el servidor
+app.listen(PORT, () => {
+    console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });

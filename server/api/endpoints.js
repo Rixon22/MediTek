@@ -1,8 +1,12 @@
 const express = require('express');
 const router = express.Router();
+const patientController = require('../controllers/patientController.js');
 
-const { testController } = require('../controllers/testController');
+// Rutas para pacientes
+router.post('/pacientes', patientController.crearPaciente);
+router.get('/pacientes', patientController.obtenerPacientes);
+router.put('/pacientes/:id', patientController.actualizarPaciente);
+router.delete('/pacientes/:id', patientController.eliminarPaciente);
 
-router.get('/test', testController); // Ruta para obtener un registro de la tabla "test" de Airtable
-
+// Exportar las rutas
 module.exports = router;
