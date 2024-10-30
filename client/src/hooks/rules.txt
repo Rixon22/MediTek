@@ -1,0 +1,3 @@
+- Hooks:
+    * Se mantendrán aquí hooks que sean comunes para varios módulos y componentes
+    * Si un hook se repite en el código, es conveniente crear uno personalizado para fungir como hook genérico.

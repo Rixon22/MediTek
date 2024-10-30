@@ -1,0 +1,4 @@
+ - Los helpers son aquellas funciones que son empleadas por múltiples componentes, por ejemplo:
+    * Formateadores de Fecha
+    * Formateadores de Texto
+    * Funciones para calcular
