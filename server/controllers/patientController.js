@@ -13,19 +13,56 @@ const db = new sqlite3.Database(dbPath, (err) => {
 
 // Create a new patient
 const createPatient = (req, res) => {
-    const { name, birth_date, email, phone, password } = req.body;
+    const { first_name, last_name, birth_date, email, phone, password } = req.body;
 
     // Hash the password
     bcrypt.hash(password, 10, (err, hash) => {
         if (err) return res.status(500).json({ error: err.message });
 
-        db.run(`INSERT INTO patients (name, birth_date, email, phone, password) VALUES (?, ?, ?, ?, ?)`, 
-            [name, birth_date, email, phone, hash], function (err) {
+        db.run(`INSERT INTO patients (first_name, last_name, birth_date, email, phone, password) VALUES (?, ?, ?, ?, ?, ?)`, 
+            [first_name, last_name, birth_date, email, phone, hash], function (err) {
                 if (err) {
                     return res.status(500).json({ error: err.message });
                 }
-                res.status(201).json({ id: this.lastID, name, birth_date, email, phone });
+                res.status(201).json({ id: this.lastID, first_name, last_name, birth_date, email, phone });
             });
+    });
+};
+
+// Get all patients with details
+const getPatientsWithDetails = (req, res) => {
+    const query = `
+        SELECT 
+            patients.id, 
+            patients.first_name, 
+            patients.last_name, 
+            patients.birth_date, 
+            patients.email, 
+            patients.phone,
+            GROUP_CONCAT(DISTINCT medical_conditions.name) AS conditions,
+            GROUP_CONCAT(DISTINCT allergies.name) AS allergies,
+            GROUP_CONCAT(DISTINCT treatments.description) AS treatments
+        FROM 
+            patients
+        LEFT JOIN 
+            patient_conditions ON patients.id = patient_conditions.patient_id
+        LEFT JOIN 
+            medical_conditions ON patient_conditions.condition_id = medical_conditions.id
+        LEFT JOIN 
+            patient_allergies ON patients.id = patient_allergies.patient_id
+        LEFT JOIN 
+            allergies ON patient_allergies.allergy_id = allergies.id
+        LEFT JOIN 
+            treatments ON patients.id = treatments.patient_id
+        GROUP BY 
+            patients.id
+    `;
+
+    db.all(query, [], (err, rows) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        res.json(rows);
     });
 };
 
@@ -43,9 +80,9 @@ const getPatients = (req, res) => {
 // Update a patient by ID
 const updatePatient = (req, res) => {
     const { id } = req.params;
-    const { name, birth_date, email, phone } = req.body;
-    db.run(`UPDATE patients SET name = ?, birth_date = ?, email = ?, phone = ? WHERE id = ?`, 
-        [name, birth_date, email, phone, id], function (err) {
+    const { first_name, last_name, birth_date, email, phone } = req.body;
+    db.run(`UPDATE patients SET first_name = ?, last_name = ?, birth_date = ?, email = ?, phone = ? WHERE id = ?`, 
+        [first_name, last_name, birth_date, email, phone, id], function (err) {
             if (err) {
                 return res.status(500).json({ error: err.message });
             }
@@ -93,8 +130,9 @@ const loginPatient = (req, res) => {
 // Export the controller functions
 module.exports = {
     createPatient,
-    getPatients,
+    getPatientsWithDetails,
     updatePatient,
     deletePatient,
     loginPatient,
+    getPatients
 };
