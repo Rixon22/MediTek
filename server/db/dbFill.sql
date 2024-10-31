@@ -5,16 +5,16 @@ INSERT INTO specialties (name, description) VALUES
 ('Dermatología', 'Especialidad médica que se ocupa de las enfermedades de la piel.');
 
 -- Insertar datos en la tabla de pacientes
-INSERT INTO patients (name, birth_date, email, phone, password) VALUES
-('Juan Pérez', '1985-03-15', 'juan.perez@example.com', '555-1234', 'password123'),
-('Ana Gómez', '1990-07-22', 'ana.gomez@example.com', '555-5678', 'password456'),
-('Luis Martínez', '1978-12-30', 'luis.martinez@example.com', '555-8765', 'password789');
+INSERT INTO patients (first_name, last_name, birth_date, email, phone, password) VALUES
+('Juan', 'Pérez', '1985-03-15', 'juan.perez@example.com', '555-1234', 'password123'),
+('Ana', 'Gómez', '1990-07-22', 'ana.gomez@example.com', '555-5678', 'password456'),
+('Luis', 'Martínez', '1978-12-30', 'luis.martinez@example.com', '555-8765', 'password789');
 
 -- Insertar datos en la tabla de doctores
-INSERT INTO doctors (name, specialty_id, email, phone, password) VALUES
-('Dr. Carlos Sánchez', 1, 'carlos.sanchez@example.com', '555-0001', 'pass123'),
-('Dra. María López', 2, 'maria.lopez@example.com', '555-0002', 'pass456'),
-('Dr. Roberto Torres', 3, 'roberto.torres@example.com', '555-0003', 'pass789');
+INSERT INTO doctors (first_name, last_name, specialty_id, email, phone, password) VALUES
+('Carlos', 'Sánchez', 1, 'carlos.sanchez@example.com', '555-0001', 'pass123'),
+('María', 'López', 2, 'maria.lopez@example.com', '555-0002', 'pass456'),
+('Roberto', 'Torres', 3, 'roberto.torres@example.com', '555-0003', 'pass789');
 
 -- Insertar datos en la tabla de tratamientos
 INSERT INTO treatments (patient_id, doctor_id, description, start_date, end_date) VALUES

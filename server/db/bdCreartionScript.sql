@@ -2,7 +2,8 @@
 -- Tabla de pacientes
 CREATE TABLE patients (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT NOT NULL,
+  first_name TEXT NOT NULL,
+  last_name TEXT NOT NULL,
   birth_date DATE NOT NULL,
   email TEXT NOT NULL UNIQUE,
   phone TEXT,
@@ -12,13 +13,15 @@ CREATE TABLE patients (
 -- Tabla de doctores
 CREATE TABLE doctors (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT NOT NULL,
+  first_name TEXT NOT NULL,
+  last_name TEXT NOT NULL,
   specialty_id INTEGER,
   email TEXT NOT NULL UNIQUE,
   phone TEXT,
   password TEXT NOT NULL,
   FOREIGN KEY (specialty_id) REFERENCES specialties(id)
 );
+
 
 -- Tabla de especialidades
 CREATE TABLE specialties (
