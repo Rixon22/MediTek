@@ -1,42 +1,62 @@
+:root {
+  --max-width: 1280px;
+  --margin: 0 auto;
+  --padding: 2rem;
+  --text-align: center;
+
+  --logo-height: 6em;
+  --logo-padding: 1.5em;
+  --logo-transition: filter 300ms;
+  --logo-drop-shadow-color: #646cffaa;
+  --logo-react-drop-shadow-color: #61dafbaa;
+  --animation-duration: 20s;
+
+  --card-padding: 2em;
+  --read-the-docs-color: #888;
+
+  --background-color: #ffffff;
+  --text-color: #000000;
+}
+
+.dark-theme {
+  --background-color: #181818;
+  --text-color: #ffffff;
+  --logo-drop-shadow-color: #646cff55;
+  --logo-react-drop-shadow-color: #61dafb55;
+  --read-the-docs-color: #aaa;
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  max-width: var(--max-width);
+  margin: var(--margin);
+  padding: var(--padding);
+  text-align: var(--text-align);
 }
 
 .logo {
-  height: 6em;
-  padding: 1.5em;
+  height: var(--logo-height);
+  padding: var(--logo-padding);
   will-change: filter;
-  transition: filter 300ms;
+  transition: var(--logo-transition);
 }
+
 .logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+  filter: drop-shadow(0 0 2em var(--logo-drop-shadow-color));
 }
+
 .logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+  filter: drop-shadow(0 0 2em var(--logo-react-drop-shadow-color));
 }
 
 .card {
-  padding: 2em;
+  padding: var(--card-padding);
 }
 
 .read-the-docs {
-  color: #888;
+  color: var(--read-the-docs-color);
 }
