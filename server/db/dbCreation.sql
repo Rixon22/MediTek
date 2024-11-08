@@ -1,4 +1,3 @@
-
 -- Tabla de pacientes
 CREATE TABLE patients (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -129,14 +128,31 @@ CREATE TABLE allergies (
   description TEXT
 );
 
+-- Tabla de severidad de alergias (catálogo)
+CREATE TABLE allergy_severity (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  level TEXT NOT NULL UNIQUE
+);
+
 -- Tabla de relación pacientes y alergias
 CREATE TABLE patient_allergies (
   patient_id INTEGER,
   allergy_id INTEGER,
-  severity TEXT,
+  severity_id INTEGER,  -- Referencia al catálogo de severidad
   reaction TEXT,
   notes TEXT,
   PRIMARY KEY (patient_id, allergy_id),
   FOREIGN KEY (patient_id) REFERENCES patients(id),
-  FOREIGN KEY (allergy_id) REFERENCES allergies(id)
+  FOREIGN KEY (allergy_id) REFERENCES allergies(id),
+  FOREIGN KEY (severity_id) REFERENCES allergy_severity(id)
+);
+
+-- Tabla intermedia de relación paciente-doctor
+CREATE TABLE patient_doctor (
+  patient_id INTEGER,
+  doctor_id INTEGER,
+  assigned_date DATE,
+  PRIMARY KEY (patient_id, doctor_id),
+  FOREIGN KEY (patient_id) REFERENCES patients(id),
+  FOREIGN KEY (doctor_id) REFERENCES doctors(id)
 );
