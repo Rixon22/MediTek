@@ -1,4 +1,12 @@
--- Tabla de pacientes
+-- Tabla de clínicas (catálogo)
+CREATE TABLE clinics (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL UNIQUE,
+  address TEXT,
+  location TEXT -- Campo para el enlace de ubicación en Google Maps u otra plataforma
+);
+
+-- Tabla de pacientes con CURP único
 CREATE TABLE patients (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   first_name TEXT NOT NULL,
@@ -6,10 +14,11 @@ CREATE TABLE patients (
   birth_date DATE NOT NULL,
   email TEXT NOT NULL UNIQUE,
   phone TEXT,
-  password TEXT NOT NULL
+  password TEXT NOT NULL,
+  curp TEXT NOT NULL UNIQUE -- Campo CURP único
 );
 
--- Tabla de doctores
+-- Tabla de doctores con referencia a clínica y número de consultorio
 CREATE TABLE doctors (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   first_name TEXT NOT NULL,
@@ -18,9 +27,11 @@ CREATE TABLE doctors (
   email TEXT NOT NULL UNIQUE,
   phone TEXT,
   password TEXT NOT NULL,
-  FOREIGN KEY (specialty_id) REFERENCES specialties(id)
+  clinic_id INTEGER, -- Referencia a la clínica
+  consulting_room TEXT, -- Número de consultorio
+  FOREIGN KEY (specialty_id) REFERENCES specialties(id),
+  FOREIGN KEY (clinic_id) REFERENCES clinics(id)
 );
-
 
 -- Tabla de especialidades
 CREATE TABLE specialties (
@@ -156,6 +167,19 @@ CREATE TABLE patient_doctor (
   doctor_id INTEGER,
   assigned_date DATE,
   PRIMARY KEY (patient_id, doctor_id),
+  FOREIGN KEY (patient_id) REFERENCES patients(id),
+  FOREIGN KEY (doctor_id) REFERENCES doctors(id)
+);
+
+
+-- Tabla de solicitudes de conexión
+CREATE TABLE connection_requests (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  patient_id INTEGER NOT NULL,
+  doctor_id INTEGER NOT NULL,
+  request_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  status TEXT NOT NULL CHECK(status IN ('pending', 'accepted', 'rejected')),
+  expiration_date TIMESTAMP DEFAULT (DATE('now', '+7 days')),  -- Expiración de 7 días después de la solicitud
   FOREIGN KEY (patient_id) REFERENCES patients(id),
   FOREIGN KEY (doctor_id) REFERENCES doctors(id)
 );
