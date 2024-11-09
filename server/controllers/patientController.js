@@ -7,29 +7,38 @@ const db = new sqlite3.Database(dbPath, (err) => {
     if (err) {
         console.error('Error al abrir la base de datos:', err.message);
     } else {
-        console.log('Conectado a la base de datos.');
+        console.log('Controlador de pacientes conectado a la base de datos.');
     }
 });
 
-// Create a new patient
+// Crear un nuevo paciente
 const createPatient = (req, res) => {
-    const { first_name, last_name, birth_date, email, phone, password } = req.body;
+    const { first_name, last_name, birth_date, email, phone, password, curp } = req.body;
 
-    // Hash the password
-    bcrypt.hash(password, 10, (err, hash) => {
+    // Validar CURP único
+    db.get(`SELECT id FROM patients WHERE curp = ?`, [curp], (err, row) => {
         if (err) return res.status(500).json({ error: err.message });
+        if (row) {
+            return res.status(400).json({ message: 'CURP ya registrado' });
+        }
 
-        db.run(`INSERT INTO patients (first_name, last_name, birth_date, email, phone, password) VALUES (?, ?, ?, ?, ?, ?)`, 
-            [first_name, last_name, birth_date, email, phone, hash], function (err) {
-                if (err) {
-                    return res.status(500).json({ error: err.message });
-                }
-                res.status(201).json({ id: this.lastID, first_name, last_name, birth_date, email, phone });
-            });
+        // Hash de la contraseña
+        bcrypt.hash(password, 10, (err, hash) => {
+            if (err) return res.status(500).json({ error: err.message });
+
+            // Insertar nuevo paciente
+            db.run(`INSERT INTO patients (first_name, last_name, birth_date, email, phone, password, curp) VALUES (?, ?, ?, ?, ?, ?, ?)`, 
+                [first_name, last_name, birth_date, email, phone, hash, curp], function (err) {
+                    if (err) {
+                        return res.status(500).json({ error: err.message });
+                    }
+                    res.status(201).json({ id: this.lastID, first_name, last_name, birth_date, email, phone });
+                });
+        });
     });
 };
 
-// Get all patients with details
+// Obtener todos los pacientes con detalles
 const getPatientsWithDetails = (req, res) => {
     const query = `
         SELECT 
@@ -66,9 +75,9 @@ const getPatientsWithDetails = (req, res) => {
     });
 };
 
-// Get all patients
+// Obtener todos los pacientes
 const getPatients = (req, res) => {
-    console.log('Getting patients...');
+    console.log('Obteniendo pacientes...');
     db.all("SELECT * FROM patients", [], (err, rows) => {
         if (err) {
             return res.status(500).json({ error: err.message });
@@ -77,31 +86,41 @@ const getPatients = (req, res) => {
     });
 };
 
-// Update a patient by ID
+// Actualizar paciente por ID
 const updatePatient = (req, res) => {
     const { id } = req.params;
-    const { first_name, last_name, birth_date, email, phone } = req.body;
-    db.run(`UPDATE patients SET first_name = ?, last_name = ?, birth_date = ?, email = ?, phone = ? WHERE id = ?`, 
-        [first_name, last_name, birth_date, email, phone, id], function (err) {
-            if (err) {
-                return res.status(500).json({ error: err.message });
-            }
-            res.json({ message: `Patient with ID ${id} updated` });
-        });
+    const { first_name, last_name, birth_date, email, phone, curp } = req.body;
+
+    // Validar CURP único
+    db.get(`SELECT id FROM patients WHERE curp = ? AND id != ?`, [curp, id], (err, row) => {
+        if (err) return res.status(500).json({ error: err.message });
+        if (row) {
+            return res.status(400).json({ message: 'CURP ya registrado' });
+        }
+
+        // Actualizar paciente
+        db.run(`UPDATE patients SET first_name = ?, last_name = ?, birth_date = ?, email = ?, phone = ?, curp = ? WHERE id = ?`, 
+            [first_name, last_name, birth_date, email, phone, curp, id], function (err) {
+                if (err) {
+                    return res.status(500).json({ error: err.message });
+                }
+                res.json({ message: `Paciente con ID ${id} actualizado` });
+            });
+    });
 };
 
-// Delete a patient by ID
+// Eliminar paciente por ID
 const deletePatient = (req, res) => {
     const { id } = req.params;
     db.run(`DELETE FROM patients WHERE id = ?`, id, function (err) {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
-        res.json({ message: `Patient with ID ${id} deleted` });
+        res.json({ message: `Paciente con ID ${id} eliminado` });
     });
 };
 
-// Login a patient
+// Login de paciente
 const loginPatient = (req, res) => {
     const { email, password } = req.body;
 
@@ -110,24 +129,24 @@ const loginPatient = (req, res) => {
             return res.status(500).json({ error: err.message });
         }
         if (!patient) {
-            return res.status(401).json({ message: 'Invalid credentials' });
+            return res.status(401).json({ message: 'Credenciales inválidas' });
         }
 
-        // Compare the provided password with the stored one
+        // Comparar la contraseña proporcionada con la almacenada
         bcrypt.compare(password, patient.password, (err, result) => {
             if (err) return res.status(500).json({ error: err.message });
             if (!result) {
-                return res.status(401).json({ message: 'Invalid credentials' });
+                return res.status(401).json({ message: 'Credenciales inválidas' });
             }
 
-            // Generate a JWT token
+            // Generar un token JWT
             const token = jwt.sign({ id: patient.id, email: patient.email }, 'your_secret_key', { expiresIn: '1h' });
-            res.json({ message: 'Login successful', token });
+            res.json({ message: 'Login exitoso', token });
         });
     });
 };
 
-// Export the controller functions
+// Exportar las funciones del controlador
 module.exports = {
     createPatient,
     getPatientsWithDetails,
