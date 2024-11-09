@@ -120,32 +120,6 @@ const deletePatient = (req, res) => {
     });
 };
 
-// Login de paciente
-const loginPatient = (req, res) => {
-    const { email, password } = req.body;
-
-    db.get(`SELECT * FROM patients WHERE email = ?`, [email], (err, patient) => {
-        if (err) {
-            return res.status(500).json({ error: err.message });
-        }
-        if (!patient) {
-            return res.status(401).json({ message: 'Credenciales inválidas' });
-        }
-
-        // Comparar la contraseña proporcionada con la almacenada
-        bcrypt.compare(password, patient.password, (err, result) => {
-            if (err) return res.status(500).json({ error: err.message });
-            if (!result) {
-                return res.status(401).json({ message: 'Credenciales inválidas' });
-            }
-
-            // Generar un token JWT
-            const token = jwt.sign({ id: patient.id, email: patient.email }, 'your_secret_key', { expiresIn: '1h' });
-            res.json({ message: 'Login exitoso', token });
-        });
-    });
-};
-
 // Exportar las funciones del controlador
 module.exports = {
     createPatient,
