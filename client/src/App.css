@@ -11,7 +11,7 @@ code {
     monospace;
 }
 
-#root{
+#root {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -36,4 +36,34 @@ code {
 
 button {
   margin: 10px;
+}
+
+.theme-toggle-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  display: flex;
+  justify-content: flex-end;
+  padding: 0.5vh;
+}
+
+.toggle-btn {
+  width: 56px;
+  height: 56px;
+  border: 2px #e1e1e1 solid;
+  border-radius: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+}
+
+.toggle-icon {
+  width: 56px;
+}
+.toggle-btn:hover {
+  width: 56px;
+  height: 56px;
+  cursor: pointer;
 }

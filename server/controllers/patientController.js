@@ -3,6 +3,7 @@ const dbPath = require('../db/dbConfig.js');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
+
 const db = new sqlite3.Database(dbPath, (err) => {
     if (err) {
         console.error('Error al abrir la base de datos:', err.message);
@@ -27,7 +28,7 @@ const createPatient = (req, res) => {
             if (err) return res.status(500).json({ error: err.message });
 
             // Insertar nuevo paciente
-            db.run(`INSERT INTO patients (first_name, last_name, birth_date, email, phone, password, curp) VALUES (?, ?, ?, ?, ?, ?, ?)`, 
+            db.run(`INSERT INTO patients (first_name, last_name, birth_date, email, phone, password, curp) VALUES (?, ?, ?, ?, ?, ?, ?)`,
                 [first_name, last_name, birth_date, email, phone, hash, curp], function (err) {
                     if (err) {
                         return res.status(500).json({ error: err.message });
@@ -99,7 +100,7 @@ const updatePatient = (req, res) => {
         }
 
         // Actualizar paciente
-        db.run(`UPDATE patients SET first_name = ?, last_name = ?, birth_date = ?, email = ?, phone = ?, curp = ? WHERE id = ?`, 
+        db.run(`UPDATE patients SET first_name = ?, last_name = ?, birth_date = ?, email = ?, phone = ?, curp = ? WHERE id = ?`,
             [first_name, last_name, birth_date, email, phone, curp, id], function (err) {
                 if (err) {
                     return res.status(500).json({ error: err.message });
@@ -126,6 +127,5 @@ module.exports = {
     getPatientsWithDetails,
     updatePatient,
     deletePatient,
-    loginPatient,
     getPatients
 };

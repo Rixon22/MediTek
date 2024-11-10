@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
+import Styles from './login.module.css';
 import TextField from '@mui/material/TextField';
 // import FormControlLabel from '@mui/material/FormControlLabel';
 // import Checkbox from '@mui/material/Checkbox';
@@ -10,11 +11,12 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import ModalSelector from '../../components/sidebar/registerSelector/ModalSelector';
 
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-
+  const [showModal, setShowModal] = useState(false);
   const handleSubmit = (event) => {
     event.preventDefault();
     // Handle login logic here
@@ -23,7 +25,8 @@ function Login() {
   };
 
   return (
-    <div className="login-container">
+    <div className={Styles.loginContainer}>
+      {showModal ? <ModalSelector></ModalSelector> : null}
       <Container
         component='main'
         maxWidth='xs'>
@@ -70,15 +73,6 @@ function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-            {/* <FormControlLabel
-            control={
-              <Checkbox
-                value='remember'
-                color='primary'
-              />
-            }
-            label='Remember me'
-          /> */}
             <Button
               type='submit'
               fullWidth
@@ -99,7 +93,8 @@ function Login() {
               <Grid item>
                 <Link
                   href='#'
-                  variant='body2'>
+                  variant='body2'
+                  onClick={() => setShowModal(true)}>
                   {'¿No tienes cuenta?'}
                 </Link>
               </Grid>
