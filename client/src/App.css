@@ -46,6 +46,7 @@ button {
   display: flex;
   justify-content: flex-end;
   padding: 0.5vh;
+  cursor: pointer;
 }
 
 .toggle-btn {

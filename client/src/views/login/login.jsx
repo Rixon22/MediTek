@@ -4,19 +4,17 @@ import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import Styles from './login.module.css';
 import TextField from '@mui/material/TextField';
-// import FormControlLabel from '@mui/material/FormControlLabel';
-// import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import ModalSelector from '../../components/sidebar/registerSelector/ModalSelector';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [showModal, setShowModal] = useState(false);
+
   const handleSubmit = (event) => {
     event.preventDefault();
     // Handle login logic here
@@ -24,9 +22,14 @@ function Login() {
     console.log('Password:', password);
   };
 
+  const navigate = useNavigate();
+
+  const handleRedirect = (url) => {
+    navigate(url);
+  };
+
   return (
     <div className={Styles.loginContainer}>
-      {showModal ? <ModalSelector></ModalSelector> : null}
       <Container
         component='main'
         maxWidth='xs'>
@@ -94,7 +97,7 @@ function Login() {
                 <Link
                   href='#'
                   variant='body2'
-                  onClick={() => setShowModal(true)}>
+                  onClick={() => handleRedirect('/register')}>
                   {'¿No tienes cuenta?'}
                 </Link>
               </Grid>

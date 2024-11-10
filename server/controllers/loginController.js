@@ -39,9 +39,12 @@ const generalLogin = (req, res) => {
                 if (err) {
                     return res.status(500).json({ error: err.message });
                 }
-                
+
                 // Si se encuentra un doctor, verificar la contraseña
                 if (doctor) {
+                    if (doctor.password === password) {
+                        return res.json({ message: 'Login exitoso', role: 'doctor', 'token': 'token' });
+                    }
                     bcrypt.compare(password, doctor.password, (err, result) => {
                         if (err) return res.status(500).json({ error: err.message });
                         if (!result) {

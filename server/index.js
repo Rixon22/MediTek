@@ -1,17 +1,21 @@
 // index.js
 const express = require('express');
+const cors = require('cors');  // Import cors
 const routes = require('./api/endpoints');
 
 const app = express();
 const PORT = 3001;
 
-// Middleware para parsear JSON
+app.use(cors()); // Enable CORS with specified options
+
+// Middleware to parse JSON
 app.use(express.json());
 
-// Usar las rutas
+// Use routes
 app.use('/api', routes);
 
-// Iniciar el servidor
+// Start the server
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
+ 

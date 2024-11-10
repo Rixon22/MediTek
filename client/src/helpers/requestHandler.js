@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-async function postRequest(url, data) {
+const postRequest = async (url, data) => {
     try {
         const response = await axios.post(url, data);
         return response;
@@ -9,8 +9,8 @@ async function postRequest(url, data) {
     }
 }
 
-async function getRequest(params) {
+const getRequest = (params) => {
     console.log(params)
 }
 
-export default { postRequest, getRequest };
+export { postRequest, getRequest };
