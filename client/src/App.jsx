@@ -4,11 +4,11 @@ import Dark from './assets/icons8-dark-48.svg';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Login from './views/login/login';
 import { ThemeProvider, CssBaseline } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import lightTheme from './themes/lightTheme';
 import darkTheme from './themes/darkTheme';
 import MedicRegister from './views/register/medic/medicRegister';
-import { postRequest } from './helpers/requestHandler.js';
+import PatientForm from './views/register/patient/patientRegister';
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -16,13 +16,6 @@ function App() {
   const handleThemeChange = () => {
     setDarkMode(!darkMode);
   };
-
-  useEffect(() => {
-    postRequest('http://localhost:3001/api/login', {
-      email: 'maria.fernandez@example.com',
-      password: 'doctor123',
-    });
-  }, []);
 
   return (
     <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
@@ -46,6 +39,10 @@ function App() {
           <Route
             path='/register'
             element={<MedicRegister />}
+          />
+          <Route
+            path='/register/patient'
+            element={<PatientForm />}
           />
         </Routes>
       </Router>

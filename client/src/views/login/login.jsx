@@ -10,6 +10,8 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { useNavigate } from 'react-router-dom';
+import { postRequest } from '../../helpers/requestHandler';
+import URLS from '../../constants/url';
 
 function Login() {
   const [username, setUsername] = useState('');
@@ -20,6 +22,12 @@ function Login() {
     // Handle login logic here
     console.log('Username:', username);
     console.log('Password:', password);
+    const response = postRequest(URLS.dev + 'api/login', {
+      email: username,
+      password: password,
+    });
+    console.log(response);
+    
   };
 
   const navigate = useNavigate();
@@ -57,7 +65,7 @@ function Login() {
               required
               fullWidth
               id='username'
-              label='Username'
+              label='Email'
               name='username'
               autoComplete='username'
               autoFocus
