@@ -1,4 +1,3 @@
-// Login.js
 import { useState } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -9,12 +8,8 @@ import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-
-const theme = createTheme();
 
 function Login() {
   const [username, setUsername] = useState('');
@@ -28,7 +23,7 @@ function Login() {
   };
 
   return (
-    <ThemeProvider theme={theme}>
+    <div className="login-container">
       <Container
         component='main'
         maxWidth='xs'>
@@ -76,14 +71,14 @@ function Login() {
               onChange={(e) => setPassword(e.target.value)}
             />
             {/* <FormControlLabel
-              control={
-                <Checkbox
-                  value='remember'
-                  color='primary'
-                />
-              }
-              label='Remember me'
-            /> */}
+            control={
+              <Checkbox
+                value='remember'
+                color='primary'
+              />
+            }
+            label='Remember me'
+          /> */}
             <Button
               type='submit'
               fullWidth
@@ -112,7 +107,7 @@ function Login() {
           </Box>
         </Box>
       </Container>
-    </ThemeProvider>
+    </div>
   );
 }
 

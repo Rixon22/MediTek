@@ -1,62 +1,39 @@
-:root {
-  --max-width: 1280px;
-  --margin: 0 auto;
-  --padding: 2rem;
-  --text-align: center;
-
-  --logo-height: 6em;
-  --logo-padding: 1.5em;
-  --logo-transition: filter 300ms;
-  --logo-drop-shadow-color: #646cffaa;
-  --logo-react-drop-shadow-color: #61dafbaa;
-  --animation-duration: 20s;
-
-  --card-padding: 2em;
-  --read-the-docs-color: #888;
-
-  --background-color: #ffffff;
-  --text-color: #000000;
-}
-
-.dark-theme {
-  --background-color: #181818;
-  --text-color: #ffffff;
-  --logo-drop-shadow-color: #646cff55;
-  --logo-react-drop-shadow-color: #61dafb55;
-  --read-the-docs-color: #aaa;
-}
+/* Basic resets and global styles */
 
 body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+#root{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100vw;
   background-color: var(--background-color);
   color: var(--text-color);
+  width: 100%;
 }
 
-#root {
-  max-width: var(--max-width);
-  margin: var(--margin);
-  padding: var(--padding);
-  text-align: var(--text-align);
-}
+/* .App {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100vw;
+  background-color: var(--background-color);
+  color: var(--text-color);
+} */
 
-.logo {
-  height: var(--logo-height);
-  padding: var(--logo-padding);
-  will-change: filter;
-  transition: var(--logo-transition);
-}
-
-.logo:hover {
-  filter: drop-shadow(0 0 2em var(--logo-drop-shadow-color));
-}
-
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em var(--logo-react-drop-shadow-color));
-}
-
-.card {
-  padding: var(--card-padding);
-}
-
-.read-the-docs {
-  color: var(--read-the-docs-color);
+button {
+  margin: 10px;
 }
