@@ -3,6 +3,7 @@ const router = express.Router();
 const patientController = require('../controllers/patientController.js');
 const loginController = require('../controllers/loginController.js');
 const dishController = require('../controllers/dishController.js');
+const doctorController = require('../controllers/doctorController.js');
 
 // Routes for login
 router.post('/login', loginController.generalLogin);                  // General login for patients and doctors
@@ -25,6 +26,14 @@ router.get('/ingredients', dishController.getAllIngredients);           // Get a
 
 // Routes for dish-ingredient relationships
 router.post('/dish_ingredients', dishController.addIngredientToDish);   // Associate an ingredient to a dish
+
+// Routes for doctors
+router.post('/doctors', doctorController.createDoctor);                 // Create a new doctor
+router.get('/doctors', doctorController.getDoctors);                    // Get all doctors (basic info)
+router.get('/doctors', doctorController.getDoctorsWithDetails);         // Get all doctors with details
+router.put('/doctors/:id', doctorController.updateDoctor);              // Update a doctor by ID
+router.delete('/doctors/:id', doctorController.deleteDoctor);           // Delete a doctor by ID
+
 
 // Export the routes
 module.exports = router;
