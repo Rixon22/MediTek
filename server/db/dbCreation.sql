@@ -178,8 +178,14 @@ CREATE TABLE connection_requests (
   patient_id INTEGER NOT NULL,
   doctor_id INTEGER NOT NULL,
   request_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  status TEXT NOT NULL CHECK(status IN ('pending', 'accepted', 'rejected')),
-  expiration_date TIMESTAMP DEFAULT (DATE('now', '+7 days')),  -- Expiración de 7 días después de la solicitud
+  status_id INTEGER NOT NULL,
+  expiration_date TIMESTAMP DEFAULT (DATE('now', '+7 days')),
   FOREIGN KEY (patient_id) REFERENCES patients(id),
-  FOREIGN KEY (doctor_id) REFERENCES doctors(id)
+  FOREIGN KEY (doctor_id) REFERENCES doctors(id),
+  FOREIGN KEY (status_id) REFERENCES request_statuses(id)
+);
+
+CREATE TABLE request_statuses (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  status TEXT NOT NULL UNIQUE
 );

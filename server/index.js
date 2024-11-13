@@ -1,7 +1,11 @@
 // index.js
 const express = require('express');
 const cors = require('cors');  // Import cors
+const cronJob   = require('./jobs/expireRequests.js'); // Import the cron job
 const routes = require('./api/endpoints');
+
+// Start the cron job
+cronJob();
 
 const app = express();
 const PORT = 3001;

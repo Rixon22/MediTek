@@ -101,7 +101,14 @@ INSERT INTO patient_doctor (patient_id, doctor_id, assigned_date) VALUES
 (3, 3, '2024-11-01');
 
 -- Insertar datos en la tabla de solicitudes de conexión
-INSERT INTO connection_requests (patient_id, doctor_id, status) VALUES
-(1, 1, 'accepted'),
-(2, 2, 'pending'),
-(3, 3, 'rejected');
+INSERT INTO connection_requests (patient_id, doctor_id, status_id) VALUES
+(1, 1, 1),
+(2, 2, 2),
+(3, 3, 3);
+
+-- Insertar datos en los estados de conexión
+INSERT INTO request_statuses (status) VALUES
+('Pendiente'),
+('Aceptada'),
+('Rechazada'),
+('Expirada');
