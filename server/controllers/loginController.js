@@ -31,7 +31,7 @@ const generalLogin = (req, res) => {
 
                 // Generar un token JWT para paciente
                 const token = jwt.sign({ id: patient.id, email: patient.email, role: 'patient' }, process.env.JWT_SECRET, { expiresIn: '1h' });
-                return res.json({ message: 'Login exitoso', role: 'patient', token });
+                return res.json({ message: 'Login exitoso', role: 'patient', id: patient.id, token });
             });
         } else {
             // Si no es un paciente, buscar en la tabla de doctores
@@ -50,7 +50,7 @@ const generalLogin = (req, res) => {
 
                         // Generar un token JWT para doctor
                         const token = jwt.sign({ id: doctor.id, email: doctor.email, role: 'doctor' }, process.env.JWT_SECRET, { expiresIn: '1h' });
-                        return res.json({ message: 'Login exitoso', role: 'doctor', token });
+                        return res.json({ message: 'Login exitoso', role: 'doctor', id: doctor.id, token });
                     });
                 } else {
                     return res.status(401).json({ message: 'Credenciales inválidas' });

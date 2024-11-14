@@ -23,18 +23,26 @@ const createPatient = (req, res) => {
             return res.status(400).json({ message: 'CURP ya registrado' });
         }
 
-        // Hash de la contraseña
-        bcrypt.hash(password, 10, (err, hash) => {
+        // Validar correo electrónico único
+        db.get(`SELECT id FROM patients WHERE email = ?`, [email], (err, row) => {
             if (err) return res.status(500).json({ error: err.message });
+            if (row) {
+                return res.status(400).json({ message: 'Correo electrónico ya registrado' });
+            }
 
-            // Insertar nuevo paciente
-            db.run(`INSERT INTO patients (first_name, last_name, birth_date, email, phone, password, curp) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-                [first_name, last_name, birth_date, email, phone, hash, curp], function (err) {
-                    if (err) {
-                        return res.status(500).json({ error: err.message });
-                    }
-                    res.status(201).json({ id: this.lastID, first_name, last_name, birth_date, email, phone });
-                });
+            // Hash de la contraseña
+            bcrypt.hash(password, 10, (err, hash) => {
+                if (err) return res.status(500).json({ error: err.message });
+
+                // Insertar nuevo paciente
+                db.run(`INSERT INTO patients (first_name, last_name, birth_date, email, phone, password, curp) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                    [first_name, last_name, birth_date, email, phone, hash, curp], function (err) {
+                        if (err) {
+                            return res.status(500).json({ error: err.message });
+                        }
+                        res.status(201).json({ id: this.lastID, first_name, last_name, birth_date, email, phone });
+                    });
+            });
         });
     });
 };
