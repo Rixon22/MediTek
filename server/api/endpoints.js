@@ -4,37 +4,37 @@ const patientController = require('../controllers/patientController.js');
 const loginController = require('../controllers/loginController.js');
 const dishController = require('../controllers/dishController.js');
 const doctorController = require('../controllers/doctorController.js');
+const authenticateToken = require('../middleware/authMiddleware'); // Middleware de autenticación
 
-// Routes for login
-router.post('/login', loginController.generalLogin);                  // General login for patients and doctors
+// Rutas para login
+router.post('/login', loginController.generalLogin); // Login general para pacientes y doctores
 
-// Routes for patients
-router.post('/patients', patientController.createPatient);             // Create a new patient
-router.get('/patients', patientController.getPatients);                // Get all patients (basic info)
-router.post('/patients/details', patientController.getPatientDetails); // Get all details of a specific patient
-router.put('/patients/:id', patientController.updatePatient);          // Update a patient by ID
-router.delete('/patients/:id', patientController.deletePatient);       // Delete a patient by ID
-router.post('/patients/doctor', patientController.getPatientsByDoctor); // Get all patients of a specific doctor
+// Rutas para pacientes (protegidas)
+router.post('/patients/add', patientController.createPatient); // Crear un nuevo paciente
+router.get('/patients', authenticateToken, patientController.getPatients); // Obtener todos los pacientes (info básica)
+router.post('/patients/details', authenticateToken, patientController.getPatientDetails); // Obtener detalles de un paciente específico
+router.put('/patients/:id', authenticateToken, patientController.updatePatient); // Actualizar un paciente por ID
+router.delete('/patients/:id', authenticateToken, patientController.deletePatient); // Eliminar un paciente por ID
+router.post('/patients/doctor', authenticateToken, patientController.getPatientsByDoctor); // Obtener todos los pacientes de un doctor específico
 
-// Routes for dishes
-router.post('/dishes', dishController.createDish);                     // Create a new dish
-router.get('/dishes', dishController.getAllDishes);                     // Get all dishes
-router.get('/dishes/:id/ingredients', dishController.getIngredientsByDish); // Get ingredients of a specific dish
+// Rutas para platillos (protegidas)
+router.post('/dishes/add', authenticateToken, dishController.createDish); // Crear un nuevo platillo
+router.get('/dishes', authenticateToken, dishController.getAllDishes); // Obtener todos los platillos
+router.get('/dishes/:id/ingredients', authenticateToken, dishController.getIngredientsByDish); // Obtener ingredientes de un platillo específico
 
-// Routes for ingredients
-router.post('/ingredients', dishController.createIngredient);           // Create a new ingredient
-router.get('/ingredients', dishController.getAllIngredients);           // Get all ingredients
+// Rutas para ingredientes (protegidas)
+router.post('/ingredients', authenticateToken, dishController.createIngredient); // Crear un nuevo ingrediente
+router.get('/ingredients', authenticateToken, dishController.getAllIngredients); // Obtener todos los ingredientes
 
-// Routes for dish-ingredient relationships
-router.post('/dish_ingredients', dishController.addIngredientToDish);   // Associate an ingredient to a dish
+// Rutas para relaciones de platillo-ingrediente (protegidas)
+router.post('/dish_ingredients', authenticateToken, dishController.addIngredientToDish); // Asociar un ingrediente a un platillo
 
-// Routes for doctors
-router.post('/doctors', doctorController.createDoctor);                 // Create a new doctor
-router.get('/doctors', doctorController.getDoctors);                    // Get all doctors (basic info)
-router.get('/doctors', doctorController.getDoctorsWithDetails);         // Get all doctors with details
-router.put('/doctors/:id', doctorController.updateDoctor);              // Update a doctor by ID
-router.delete('/doctors/:id', doctorController.deleteDoctor);           // Delete a doctor by ID
+// Rutas para doctores (protegidas)
+router.post('/doctors/add', doctorController.createDoctor); // Crear un nuevo doctor
+router.get('/doctors', authenticateToken, doctorController.getDoctors); // Obtener todos los doctores (info básica)
+router.get('/doctors/details', authenticateToken, doctorController.getDoctorsWithDetails); // Obtener todos los doctores con detalles
+router.put('/doctors/:id', authenticateToken, doctorController.updateDoctor); // Actualizar un doctor por ID
+router.delete('/doctors/:id', authenticateToken, doctorController.deleteDoctor); // Eliminar un doctor por ID
 
-
-// Export the routes
+// Exportar las rutas
 module.exports = router;
