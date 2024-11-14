@@ -3,7 +3,6 @@ const dbPath = require('../db/dbConfig.js');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-
 const db = new sqlite3.Database(dbPath, (err) => {
     if (err) {
         console.error('Error al abrir la base de datos:', err.message);
@@ -47,8 +46,9 @@ const createPatient = (req, res) => {
     });
 };
 
-// Obtener todos los pacientes con detalles
-const getPatientsWithDetails = (req, res) => {
+// Obtener los detalles de un paciente por ID usando POST
+const getPatientDetails = (req, res) => {
+    const { patient_id } = req.body;  // Obtener patient_id del cuerpo de la solicitud
     const query = `
         SELECT 
             patients.id, 
@@ -72,11 +72,28 @@ const getPatientsWithDetails = (req, res) => {
             allergies ON patient_allergies.allergy_id = allergies.id
         LEFT JOIN 
             treatments ON patients.id = treatments.patient_id
+        WHERE 
+            patients.id = ?  -- Condición para filtrar por ID
         GROUP BY 
             patients.id
     `;
 
-    db.all(query, [], (err, rows) => {
+    db.get(query, [patient_id], (err, row) => {  // db.get para obtener un solo registro
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        if (!row) {
+            return res.status(404).json({ error: 'Paciente no encontrado' });
+        }
+        res.json(row);
+    });
+};
+
+
+// Obtener todos los pacientes
+const getPatients = (req, res) => {
+    console.log('Obteniendo pacientes...');
+    db.all("SELECT * FROM patients", [], (err, rows) => {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
@@ -84,10 +101,27 @@ const getPatientsWithDetails = (req, res) => {
     });
 };
 
-// Obtener todos los pacientes
-const getPatients = (req, res) => {
-    console.log('Obteniendo pacientes...');
-    db.all("SELECT * FROM patients", [], (err, rows) => {
+
+// Obtener todos los pacientes conectados a un médico
+const getPatientsByDoctor = (req, res) => {
+    const { doctor_id } = req.body;
+    const query = `
+        SELECT 
+            patients.id, 
+            patients.first_name, 
+            patients.last_name, 
+            patients.birth_date, 
+            patients.email, 
+            patients.phone
+        FROM 
+            patients
+        JOIN 
+            patient_doctor ON patients.id = patient_doctor.patient_id
+        WHERE 
+            patient_doctor.doctor_id = ?
+    `;
+
+    db.all(query, [doctor_id], (err, rows) => {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
@@ -132,8 +166,9 @@ const deletePatient = (req, res) => {
 // Exportar las funciones del controlador
 module.exports = {
     createPatient,
-    getPatientsWithDetails,
+    getPatientDetails,
     updatePatient,
     deletePatient,
-    getPatients
+    getPatients,
+    getPatientsByDoctor
 };

@@ -11,9 +11,10 @@ router.post('/login', loginController.generalLogin);                  // General
 // Routes for patients
 router.post('/patients', patientController.createPatient);             // Create a new patient
 router.get('/patients', patientController.getPatients);                // Get all patients (basic info)
-router.get('/patients/details', patientController.getPatientsWithDetails);  // Get patients with all details
+router.post('/patients/details', patientController.getPatientDetails); // Get all details of a specific patient
 router.put('/patients/:id', patientController.updatePatient);          // Update a patient by ID
 router.delete('/patients/:id', patientController.deletePatient);       // Delete a patient by ID
+router.post('/patients/doctor', patientController.getPatientsByDoctor); // Get all patients of a specific doctor
 
 // Routes for dishes
 router.post('/dishes', dishController.createDish);                     // Create a new dish
