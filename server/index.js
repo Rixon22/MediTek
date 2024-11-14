@@ -4,6 +4,9 @@ const cors = require('cors');  // Import cors
 const cronJob   = require('./jobs/expireRequests.js'); // Import the cron job
 const routes = require('./api/endpoints');
 
+// Cargar las variables de entorno
+require('dotenv').config();
+
 // Start the cron job
 cronJob();
 

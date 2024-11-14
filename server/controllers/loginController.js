@@ -30,7 +30,7 @@ const generalLogin = (req, res) => {
                 }
 
                 // Generar un token JWT para paciente
-                const token = jwt.sign({ id: patient.id, email: patient.email, role: 'patient' }, 'your_secret_key', { expiresIn: '1h' });
+                const token = jwt.sign({ id: patient.id, email: patient.email, role: 'patient' }, process.env.JWT_SECRET, { expiresIn: '1h' });
                 return res.json({ message: 'Login exitoso', role: 'patient', token });
             });
         } else {
@@ -49,7 +49,7 @@ const generalLogin = (req, res) => {
                         }
 
                         // Generar un token JWT para doctor
-                        const token = jwt.sign({ id: doctor.id, email: doctor.email, role: 'doctor' }, 'your_secret_key', { expiresIn: '1h' });
+                        const token = jwt.sign({ id: doctor.id, email: doctor.email, role: 'doctor' }, process.env.JWT_SECRET, { expiresIn: '1h' });
                         return res.json({ message: 'Login exitoso', role: 'doctor', token });
                     });
                 } else {
