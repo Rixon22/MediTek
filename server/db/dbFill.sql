@@ -29,10 +29,12 @@ INSERT INTO treatments (patient_id, doctor_id, description, start_date, end_date
 (3, 3, 'Tratamiento para resfriado común', '2024-11-01', '2024-11-10');
 
 -- Insertar datos en la tabla de dietas
-INSERT INTO diets (patient_id, description, start_date, end_date, dish_id) VALUES
-(1, 'Dieta baja en sodio', '2024-10-01', '2024-10-15', 1),
-(2, 'Dieta rica en proteínas', '2024-09-15', '2024-09-30', 2),
-(3, 'Dieta balanceada', '2024-11-01', '2024-11-15', 3);
+INSERT INTO diets (patient_id, doctor_id, description, start_date, end_date, is_active, time, dish_id)
+VALUES
+  (1, 2, 'Dieta baja en carbohidratos para perder peso', '2024-11-15', '2024-11-30', 1, '08:00:00', 3),
+  (2, 1, 'Dieta alta en proteínas para ganar masa muscular', '2024-11-16', '2024-12-15', 1, '12:00:00', 4),
+  (3, 3, 'Dieta para controlar la diabetes', '2024-11-10', '2024-11-20', 0, '19:00:00', 5);
+
 
 -- Insertar datos en la tabla de platillos
 INSERT INTO dishes (name, description) VALUES

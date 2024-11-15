@@ -52,15 +52,19 @@ CREATE TABLE treatments (
   FOREIGN KEY (doctor_id) REFERENCES doctors(id)
 );
 
--- Tabla de dietas
+-- Tabla de dietas (actualizada con doctor asignado)
 CREATE TABLE diets (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   patient_id INTEGER,
+  doctor_id INTEGER, 
   description TEXT NOT NULL,
   start_date DATE NOT NULL,
-  end_date DATE,
+  end_date DATE NOT NULL, 
+  is_active BOOLEAN NOT NULL DEFAULT 1, 
+  time TIME, 
   dish_id INTEGER,
   FOREIGN KEY (patient_id) REFERENCES patients(id),
+  FOREIGN KEY (doctor_id) REFERENCES doctors(id), 
   FOREIGN KEY (dish_id) REFERENCES dishes(id)
 );
 
