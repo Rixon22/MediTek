@@ -5,6 +5,9 @@ const loginController = require('../controllers/loginController.js');
 const dishController = require('../controllers/dishController.js');
 const doctorController = require('../controllers/doctorController.js');
 const dietController = require('../controllers/dietController.js');
+const treatmentController = require('../controllers/treatmentController.js');
+const treatmentMedicationController = require('../controllers/treatmentMedicationController.js');
+const medicationController = require('../controllers/medicationController.js');
 const authenticateToken = require('../middleware/authMiddleware'); // Middleware de autenticación
 
 // Rutas para login
@@ -32,6 +35,26 @@ router.get('/diets/:patient_id/:doctor_id/all', authenticateToken, dietControlle
 router.get('/diets/:doctor_id/active', authenticateToken, dietController.getActiveDietsForDoctor); // Obtener todas las dietas activas de un doctor
 router.put('/diets/:id', authenticateToken, dietController.updateDiet); // Actualizar una dieta por ID
 router.delete('/diets/:id', authenticateToken, dietController.deleteDiet); // Eliminar una dieta por ID
+
+// Rutas para tratamientos (protegidas)
+router.post('/treatments/add', authenticateToken, treatmentController.createTreatment); // Crear un nuevo tratamiento
+router.get('/treatments/:patient_id', authenticateToken, treatmentController.getTreatmentsByPatient); // Obtener tratamientos por paciente
+router.put('/treatments/:id', authenticateToken, treatmentController.updateTreatment); // Actualizar un tratamiento por ID
+router.delete('/treatments/:id', authenticateToken, treatmentController.deleteTreatment); // Eliminar un tratamiento por ID
+
+// Rutas para medicamentos de tratamientos (protegidas)
+router.post('/treatment-medications/add', authenticateToken, treatmentMedicationController.createTreatmentMedication); // Crear un nuevo medicamento de tratamiento
+router.post('/treatment-medications/add-treatment-with-medications', authenticateToken, treatmentMedicationController.createTreatmentWithMedications); // Crear un tratamiento con medicamentos
+router.get('/treatment-medications/:treatment_id', authenticateToken, treatmentMedicationController.getMedicationsByTreatment); // Obtener medicamentos de un tratamiento
+router.put('/treatment-medications/:id', authenticateToken, treatmentMedicationController.updateTreatmentMedication); // Actualizar un medicamento de tratamiento por ID
+router.delete('/treatment-medications/:id', authenticateToken, treatmentMedicationController.deleteTreatmentMedication); // Eliminar un medicamento de tratamiento por ID
+
+// Rutas para medicamentos (protegidas)
+router.post('/medications/add', authenticateToken, medicationController.createMedication); // Crear un nuevo medicamento
+router.get('/medications', authenticateToken, medicationController.getAllMedications); // Obtener todos los medicamentos
+router.get('/medications/:id', authenticateToken, medicationController.getMedicationById); // Obtener un medicamento por ID
+router.put('/medications/:id', authenticateToken, medicationController.updateMedication); // Actualizar un medicamento por ID
+
 
 // Exportar las rutas
 module.exports = router;
