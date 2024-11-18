@@ -12,28 +12,46 @@ import Container from '@mui/material/Container';
 import { useNavigate } from 'react-router-dom';
 import { postRequest } from '../../helpers/requestHandler';
 import URLS from '../../constants/url';
+import axios from 'axios';
 
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-
-  const handleSubmit = (event) => {
+  const [showError, setShowError] = useState(false);
+  const handleSubmit = async (event) => {
     event.preventDefault();
     // Handle login logic here
-    console.log('Username:', username);
-    console.log('Password:', password);
-    const response = postRequest(URLS.dev + 'api/login', {
+    const credentials = {
       email: username,
       password: password,
-    });
-    console.log(response);
-    
+    };
+    const response = await postRequest(URLS.dev + 'login', credentials);
+    const { data } = response;
+    console.log(data);
+    if (data && data.id) {
+      const token = 'Bearer ' + data.token;
+      const userData = { token: token, user: data.id, role: data.role, name: data.name, lastname: data.lastname };
+      axios.defaults.headers.common.Authorization = token;
+      console.log('userdata', userData);
+      sessionStorage.setItem('userData', JSON.stringify(userData));
+      handleRedirect('patients', { usr: userData });
+      setShowError(false);
+    } else {
+      setShowError(true);
+      setTimeout(() => {
+        setShowError(false);
+      }, 5000);
+    }
   };
 
   const navigate = useNavigate();
 
-  const handleRedirect = (url) => {
-    navigate(url);
+  const handleRedirect = (url, params = null) => {
+    if (params) {
+      navigate(url, params);
+    } else {
+      navigate(url);
+    }
   };
 
   return (
@@ -84,6 +102,7 @@ function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+            {showError ? <div>Correo o Contraseña Incorrectos</div> : null}
             <Button
               type='submit'
               fullWidth

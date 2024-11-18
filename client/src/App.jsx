@@ -9,10 +9,10 @@ import lightTheme from './themes/lightTheme';
 import darkTheme from './themes/darkTheme';
 import MedicRegister from './views/register/medic/medicRegister';
 import PatientForm from './views/register/patient/patientRegister';
+import Patients from './views/doctor/patients/patients';
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
-
   const handleThemeChange = () => {
     setDarkMode(!darkMode);
   };
@@ -43,6 +43,10 @@ function App() {
           <Route
             path='/register/patient'
             element={<PatientForm />}
+          />
+          <Route
+            path='/patients'
+            element={<Patients />}
           />
         </Routes>
       </Router>

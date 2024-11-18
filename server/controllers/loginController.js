@@ -14,7 +14,7 @@ const db = new sqlite3.Database(dbPath, (err) => {
 // Función auxiliar para verificar usuario y generar token
 const verifyUserAndGenerateToken = async (user, role, res) => {
     const token = jwt.sign({ id: user.id, email: user.email, role }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    return res.json({ message: 'Login exitoso', role, id: user.id, token });
+    return res.json({ message: 'Login exitoso', role, id: user.id, token, name: user.first_name, lastname: user.last_name });
 };
 
 // Función para buscar en una tabla y comparar la contraseña

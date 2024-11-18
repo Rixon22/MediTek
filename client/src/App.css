@@ -15,7 +15,7 @@ code {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   min-height: 100vh;
   width: 100vw;
   background-color: var(--background-color);
@@ -41,6 +41,17 @@ button {
 .theme-toggle-container {
   position: absolute;
   top: 0;
+  left: 0;
+  width: 100vw;
+  display: flex;
+  justify-content: flex-end;
+  padding: 0.5vh;
+  cursor: pointer;
+}
+
+.theme-toggle-container-down{
+  position: absolute;
+  top: 45px;
   left: 0;
   width: 100vw;
   display: flex;

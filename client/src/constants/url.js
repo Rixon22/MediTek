@@ -1,5 +1,6 @@
 const URLS = {
-    dev: 'http://localhost:3001'
+    dev: 'http://localhost:3001/api/',
+    url: ''
 }
 
 export default URLS;
