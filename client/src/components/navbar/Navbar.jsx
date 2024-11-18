@@ -65,8 +65,10 @@ const Navbar = () => {
                 return (
                   <Button
                     key={index}
-                    color='inherit'
-                    sx={{ display: { xs: 'none', sm: 'block' } }}>
+                    sx={{
+                      display: { xs: 'none', sm: 'block' },
+                      backgroundColor: 'inherit',
+                    }}>
                     {route.label}
                   </Button>
                 );
@@ -75,8 +77,13 @@ const Navbar = () => {
                 return (
                   <Button
                     key={index}
-                    color='inherit'
-                    sx={{ display: { xs: 'none', sm: 'block' } }}>
+                    sx={{
+                      display: {
+                        xs: 'none',
+                        sm: 'block',
+                        backgroundColor: 'inherit',
+                      },
+                    }}>
                     {route.label}
                   </Button>
                 );

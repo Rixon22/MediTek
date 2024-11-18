@@ -1,0 +1,6 @@
+.controlRibbon {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  padding: 8px 4px;
+}

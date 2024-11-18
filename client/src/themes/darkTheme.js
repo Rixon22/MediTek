@@ -13,8 +13,9 @@ const darkTheme = createTheme({
         MuiButton: {
             styleOverrides: {
                 root: {
-                    backgroundColor: '#1e88e5', // Custom button background color 
+                    backgroundColor: '#3823B2', // Custom button background color 
                     color: '#d2d2d2',
+                    margin: '0px 4px',
                     '&:hover': {
                         backgroundColor: '#1565c0', // Custom hover color
                         color: '#ffffff'
