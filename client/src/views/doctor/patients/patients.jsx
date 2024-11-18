@@ -1,4 +1,3 @@
-import { useLocation } from 'react-router-dom';
 import Navbar from '../../../components/navbar/Navbar';
 import { useEffect, useState } from 'react';
 import { retrieveSession } from '../../../helpers/retrieveSession';
@@ -6,12 +5,16 @@ import { postRequest } from '../../../helpers/requestHandler';
 import User from '../../../models/user/user';
 import URLS from '../../../constants/url';
 import styles from './patients.module.css';
-import { Button } from '@mui/material';
+import { Button, List, ListItem } from '@mui/material';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
+import ModalPatient from '../../../components/modalPatient/modalPatient';
 
 export default function Patients() {
-  const location = useLocation();
   const [patients, setPatients] = useState([]);
-
+  const [selectedPatient, setSelectedPatient] = useState({});
+  const [showModal, setShowModal] = useState(false);
   const getUserInfo = () => {
     const session = retrieveSession();
     if (!session) return;
@@ -54,6 +57,57 @@ export default function Patients() {
           Añadir Nuevo
         </Button>
       </div>
+      <div className={styles.listContainer}>
+        <List sx={{ width: '100%', mx: 'auto' }}>
+          {patients?.map((patient, index) => {
+            return (
+              <ListItem
+                key={index}
+                disableGutters
+                sx={{ padding: 0, cursor: 'pointer' }}
+                onClick={() => {
+                  setSelectedPatient(patient);
+                  setShowModal(true);
+                  console.log('show!');
+                }}>
+                <Card
+                  variant='outlined'
+                  sx={{
+                    width: '100%',
+                    transition: '0.3s',
+                    '&:hover': {
+                      boxShadow: 4, // Elevate card on hover
+                    },
+                  }}>
+                  <CardContent>
+                    <Typography
+                      variant='h6'
+                      component='div'>
+                      {patient.first_name}
+                    </Typography>
+                    <Typography
+                      variant='body2'
+                      color='text.secondary'>
+                      {patient.last_name}
+                    </Typography>
+                    <Typography
+                      variant='body2'
+                      color='text.secondary'>
+                      {patient.phone}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </ListItem>
+            );
+          })}
+        </List>
+      </div>
+      {showModal && selectedPatient ? (
+        <ModalPatient
+          selectedPatient={selectedPatient}
+          closeModal={setShowModal}
+        />
+      ) : null}
     </>
   );
 }

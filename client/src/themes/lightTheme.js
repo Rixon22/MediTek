@@ -16,7 +16,7 @@ const lightTheme = createTheme({
                     backgroundColor: '#1088e5', // Custom button background color 
                     color: '#d0d2d2',
                     ':hover': {
-                        backgroundColor: '#000', // Custom hover color
+                        backgroundColor: '#3e28e5', // Custom hover color
                         color: '#ffffff'
                     },
                 },

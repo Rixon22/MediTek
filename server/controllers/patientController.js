@@ -57,6 +57,7 @@ const getPatientDetails = (req, res) => {
             patients.birth_date, 
             patients.email, 
             patients.phone,
+            patients.CURP,
             GROUP_CONCAT(DISTINCT medical_conditions.name) AS conditions,
             GROUP_CONCAT(DISTINCT allergies.name) AS allergies,
             GROUP_CONCAT(DISTINCT treatments.description) AS treatments
@@ -112,7 +113,8 @@ const getPatientsByDoctor = (req, res) => {
             patients.last_name, 
             patients.birth_date, 
             patients.email, 
-            patients.phone
+            patients.phone,
+            patients.CURP
         FROM 
             patients
         JOIN 
