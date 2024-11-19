@@ -7,21 +7,31 @@ import {
   Select,
   InputLabel,
   FormControl,
+  Box,
 } from '@mui/material';
-import axios from 'axios';
-import { useEffect } from 'react';
+import { postRequest } from '../../../helpers/requestHandler';
+import URLS from '../../../constants/url';
 
 export default function MedicRegister() {
   const [formValues, setFormValues] = useState({
-    firstName: '',
-    lastName: '',
-    specialtyId: '',
+    first_name: '',
+    last_name: '',
+    specialty_id: '',
     email: '',
     phone: '',
     password: '',
-    clinicId: '',
-    consultingRoom: '',
+    passwordConfirm: '',
+    clinic_id: '',
+    consulting_room: '',
   });
+  const [error, setError] = useState('');
+
+  const handleError = (error) => {
+    setError(error);
+    setTimeout(() => {
+      setError('');
+    }, 5000);
+  };
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -29,43 +39,41 @@ export default function MedicRegister() {
     console.log(formValues);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     console.log('Form Values:', formValues);
+    if (formValues.password != formValues.passwordConfirm) {
+      console.error('Contraseñas no coinciden');
+      handleError('Contraseñas no coinciden');
+      return;
+    }
+
+    const response = await postRequest(URLS.dev + 'doctors/add', formValues);
+    const { data } = response;
+    console.log(data);
     // Here you would send formValues to the API
   };
 
-  useEffect(() => {
-    axios
-      .get('http://localhost:3001/api/patients')
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, []);
-
   return (
     <>
-    <h3>Registro de Médico</h3>
+      <h3>Registro de Médico</h3>
       <Container
         component='main'
         maxWidth='xs'>
         <form onSubmit={handleSubmit}>
           <TextField
-            name='firstName'
+            name='first_name'
             label='Nombre (s)'
-            value={formValues.firstName}
+            value={formValues.first_name}
             onChange={handleInputChange}
             fullWidth
             margin='normal'
             required
           />
           <TextField
-            name='lastName'
+            name='last_name'
             label='Apellidos'
-            value={formValues.lastName}
+            value={formValues.last_name}
             onChange={handleInputChange}
             fullWidth
             margin='normal'
@@ -77,8 +85,8 @@ export default function MedicRegister() {
             required>
             <InputLabel>Especialidad</InputLabel>
             <Select
-              name='specialtyId'
-              value={formValues.specialtyId}
+              name='specialty_id'
+              value={formValues.specialty_id}
               onChange={handleInputChange}>
               <MenuItem value={1}>Cardiología</MenuItem>
               <MenuItem value={2}>Dermatología</MenuItem>
@@ -117,7 +125,7 @@ export default function MedicRegister() {
             name='passwordConfirm'
             label='Repite Contraseña'
             type='password'
-            value={formValues.password}
+            value={formValues.passwordConfirm}
             onChange={handleInputChange}
             fullWidth
             margin='normal'
@@ -129,8 +137,8 @@ export default function MedicRegister() {
             required>
             <InputLabel>Clínica</InputLabel>
             <Select
-              name='clinicId'
-              value={formValues.clinicId}
+              name='clinic_id'
+              value={formValues.clinic_id}
               onChange={handleInputChange}>
               <MenuItem value={1}>Clínica San José</MenuItem>
               <MenuItem value={2}>Clínica Vida Saludable</MenuItem>
@@ -138,13 +146,14 @@ export default function MedicRegister() {
             </Select>
           </FormControl>
           <TextField
-            name='consultingRoom'
+            name='consulting_room'
             label='Consultorio'
-            value={formValues.consultingRoom}
+            value={formValues.consulting_room}
             onChange={handleInputChange}
             fullWidth
             margin='normal'
           />
+          {error != '' ? <Box>{{ error }}</Box> : null}
           <Button
             type='submit'
             variant='contained'
