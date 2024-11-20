@@ -19,6 +19,7 @@ const createDiet = (req, res) => {
 
     db.run(`INSERT INTO diets (patient_id, doctor_id, description, start_date, end_date, time, dish_id) 
             VALUES (?, ?, ?, ?, ?, ?, ?)`,
+
         [patient_id, doctor_id, description, start_date, end_date, time, dish_id], function (err) {
             if (err) {
                 return res.status(500).json({ error: err.message });
@@ -48,16 +49,16 @@ const getActiveDietsForPatient = (req, res) => {
     });
 };
 
-// Obtener todas las dietas de un paciente asignadas a un doctor específico
+// Obtener todas las dietas de un paciente activas 
 const getAllDietsForPatient = (req, res) => {
-    const { patient_id, doctor_id } = req.params;
+    const { patient_id } = req.params;
 
-    db.all(`SELECT * FROM diets WHERE patient_id = ? AND doctor_id = ?`, [patient_id, doctor_id], (err, rows) => {
+    db.all(`SELECT * FROM diets WHERE patient_id = ?`, [patient_id, doctor_id], (err, rows) => {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
         res.json(rows);
-    });
+    }); 
 };
 
 // Obtener todas las dietas activas de un doctor
@@ -116,7 +117,7 @@ const deleteDiet = (req, res) => {
 module.exports = {
     createDiet,
     getActiveDietsForPatient,
-    getAllDietsForPatient,
+    getAllDietsForPatient,  // Ahora correctamente cerrada
     getActiveDietsForDoctor,
     updateDiet,
     deleteDiet

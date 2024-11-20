@@ -28,13 +28,17 @@ router.get('/doctors/details', authenticateToken, doctorController.getDoctorsWit
 router.put('/doctors/:id', authenticateToken, doctorController.updateDoctor); // Actualizar un doctor por ID
 router.delete('/doctors/:id', authenticateToken, doctorController.deleteDoctor); // Eliminar un doctor por ID
 
+// TABLAS QUE INTERACTUAN CON DIETAS 
+
 // Rutas para dietas (protegidas)
 router.post('/diets/add', authenticateToken, dietController.createDiet); // Crear una nueva dieta
 router.get('/diets/:patient_id/:doctor_id/active', authenticateToken, dietController.getActiveDietsForPatient); // Obtener dietas activas de un paciente asignadas a un doctor específico
-router.get('/diets/:patient_id/:doctor_id/all', authenticateToken, dietController.getAllDietsForPatient); // Obtener todas las dietas de un paciente asignadas a un doctor específico
+router.get('/diets/active/:patient_id', authenticateToken, dietController.getAllDietsForPatient); // Obtener todas las dietas de un paciente activas
 router.get('/diets/:doctor_id/active', authenticateToken, dietController.getActiveDietsForDoctor); // Obtener todas las dietas activas de un doctor
 router.put('/diets/:id', authenticateToken, dietController.updateDiet); // Actualizar una dieta por ID
 router.delete('/diets/:id', authenticateToken, dietController.deleteDiet); // Eliminar una dieta por ID
+
+// TABLAS QUE INTERACTUAN CON TRATAMIENTOS
 
 // Rutas para tratamientos (protegidas)
 router.post('/treatments/add', authenticateToken, treatmentController.createTreatment); // Crear un nuevo tratamiento
