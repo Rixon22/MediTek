@@ -10,6 +10,9 @@ import darkTheme from './themes/darkTheme';
 import MedicRegister from './views/register/medic/medicRegister';
 import PatientForm from './views/register/patient/patientRegister';
 import Patients from './views/doctor/patients/patients';
+import PatientDiets from './views/patient/diets';
+import PatientTreatments from './views/patient/treatments';
+import PatientAppointments from './views/patient/appointments';
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -47,6 +50,18 @@ function App() {
           <Route
             path='/patients'
             element={<Patients />}
+          />
+          <Route
+            path='/patients/diets/actives/:patient_id'
+            element={<PatientDiets />}
+          />
+          <Route
+            path='/patients/treatments/:patient_id'
+            element={<PatientTreatments />}
+          />
+          <Route
+            path='/patients/appointments/:patient_id'
+            element={<PatientAppointments />}
           />
         </Routes>
       </Router>

@@ -49,17 +49,32 @@ const getActiveDietsForPatient = (req, res) => {
     });
 };
 
-// Obtener todas las dietas de un paciente activas 
+// Obtener todas las dietas activas de un paciente con el nombre del platillo
 const getAllDietsForPatient = (req, res) => {
     const { patient_id } = req.params;
 
-    db.all(`SELECT * FROM diets WHERE patient_id = ?`, [patient_id, doctor_id], (err, rows) => {
+    db.all(`
+        SELECT 
+            diets.id, 
+            diets.patient_id, 
+            diets.doctor_id, 
+            diets.description, 
+            diets.start_date, 
+            diets.end_date, 
+            diets.time, 
+            diets.is_active, 
+            dishes.name AS dish_name
+        FROM diets
+        JOIN dishes ON diets.dish_id = dishes.id
+        WHERE diets.patient_id = ? AND diets.is_active = 1
+    `, [patient_id], (err, rows) => {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
         res.json(rows);
-    }); 
+    });
 };
+
 
 // Obtener todas las dietas activas de un doctor
 const getActiveDietsForDoctor = (req, res) => {

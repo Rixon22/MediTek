@@ -56,6 +56,35 @@ const getTreatmentsByPatient = (req, res) => {
     );
 };
 
+// Obtener tratamientos con medicamentos y detalles por paciente 
+const getTreatmentsWithMedications = (req, res) => {
+    const { patient_id } = req.params;
+
+    db.all(
+        `SELECT 
+            t.id AS treatment_id, 
+            t.description AS treatment_description, 
+            t.start_date, 
+            t.end_date, 
+            d.first_name || ' ' || d.last_name AS doctor_name, 
+            m.name AS medication_name, 
+            tm.dose AS medication_dose, 
+            tm.frequency AS medication_frequency
+         FROM treatments t
+         JOIN doctors d ON t.doctor_id = d.id
+         LEFT JOIN treatment_medications tm ON t.id = tm.treatment_id
+         LEFT JOIN medications m ON tm.medication_id = m.id
+         WHERE t.patient_id = ?`,
+        [patient_id],
+        (err, rows) => {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+            res.json(rows);
+        }
+    );
+};
+
 // Actualizar un tratamiento
 const updateTreatment = (req, res) => {
     const { id } = req.params;
@@ -97,4 +126,5 @@ module.exports = {
     getTreatmentsByPatient,
     updateTreatment,
     deleteTreatment,
+    getTreatmentsWithMedications,
 };

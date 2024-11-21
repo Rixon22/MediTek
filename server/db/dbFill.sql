@@ -35,6 +35,13 @@ VALUES
   (2, 1, 'Dieta alta en proteínas para ganar masa muscular', '2024-11-16', '2024-12-15', 1, '12:00:00', 4),
   (3, 3, 'Dieta para controlar la diabetes', '2024-11-10', '2024-11-20', 0, '19:00:00', 5);
 
+-- Insertar datos en la tabla de citas medicas
+INSERT INTO medical_appointments (patient_id, doctor_id, appointment_date, reason, location)
+VALUES
+(1, 2, '2024-11-25 10:00:00', 'Chequeo general', 'https://maps.app.goo.gl/6zmpQEGN1sgZBW8w6'),
+(2, 3, '2024-11-26 14:30:00', 'Revisión de control', 'https://maps.app.goo.gl/NcbWWaSQQ3X1V4Ay6'),
+(1, 4, '2024-12-01 09:00:00', 'Consulta de seguimiento', 'https://maps.app.goo.gl/dsTwtRaBwtttmZ5n6');
+
 
 -- Insertar datos en la tabla de platillos
 INSERT INTO dishes (name, description) VALUES
