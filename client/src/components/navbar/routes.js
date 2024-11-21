@@ -15,16 +15,16 @@ const routes = [
     ],
     [
         {
-            label: 'Tratamientos',
-            route: '/treatments'
+            label: 'Dietas',
+            route: '/patients/diets/actives/'
         },
         {
-            label: 'Dietas',
-            route: '/diets'
+            label: 'Tratamientos',
+            route: '/patients/treatments/'
         },
         {
             label: 'Citas',
-            route: '/appointments'
+            route: '/patients/appointments/'
         }
     ]
 ]

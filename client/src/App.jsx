@@ -52,15 +52,15 @@ function App() {
             element={<Patients />}
           />
           <Route
-            path='/patients/diets/actives/:patient_id'
+            path='/patients/diets/actives'
             element={<PatientDiets />}
           />
           <Route
-            path='/patients/treatments/:patient_id'
+            path='/patients/treatments'
             element={<PatientTreatments />}
           />
           <Route
-            path='/patients/appointments/:patient_id'
+            path='/patients/appointments'
             element={<PatientAppointments />}
           />
         </Routes>

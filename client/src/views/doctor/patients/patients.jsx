@@ -10,11 +10,13 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import ModalPatient from '../../../components/modalPatient/modalPatient';
+import ModalAssign from '../../../components/modalAssigner/modalAssigner';
 
 export default function Patients() {
   const [patients, setPatients] = useState([]);
   const [selectedPatient, setSelectedPatient] = useState({});
   const [showModal, setShowModal] = useState(false);
+  const [showAssigner, setShowAssigner] = useState(false);
   const getUserInfo = () => {
     const session = retrieveSession();
     if (!session) return;
@@ -53,7 +55,8 @@ export default function Patients() {
               backgroundColor: '#004d00', // Darker green on hover
               color: '#ffffff', // Keep the text color white
             },
-          }}>
+          }}
+          onClick={() => setShowAssigner(true)}>
           Añadir Nuevo
         </Button>
       </div>
@@ -107,6 +110,9 @@ export default function Patients() {
           selectedPatient={selectedPatient}
           closeModal={setShowModal}
         />
+      ) : null}
+      {showAssigner ? (
+        <ModalAssign closeModal={setShowAssigner}></ModalAssign>
       ) : null}
     </>
   );

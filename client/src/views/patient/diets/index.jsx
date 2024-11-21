@@ -45,12 +45,12 @@ function PatientDiets() {
     };
 
     fetchDietas();
-  }, [patient_id]);  // El efecto se ejecuta cada vez que cambia el ID del paciente
+  }, []);  // El efecto se ejecuta cada vez que cambia el ID del paciente
 
   return (
     <>
-    <Container maxWidth="lg">
     <Navbar />    
+    <Container maxWidth="lg">
       <Box sx={{ mt: 4 }}>
         <Typography variant="h4" gutterBottom>
           Dietas Activas

@@ -47,7 +47,7 @@ button {
   justify-content: flex-end;
   padding: 0.5vh;
   cursor: pointer;
-  z-index: 999999;
+
 }
 
 .theme-toggle-container-down{
@@ -70,6 +70,7 @@ button {
   justify-content: center;
   align-items: center;
   background-color: white;
+  z-index: 999999;
 }
 
 .toggle-icon {

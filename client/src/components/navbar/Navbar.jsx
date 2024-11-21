@@ -16,17 +16,25 @@ const Navbar = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [mode, setMode] = useState(0);
   const [username, setUsername] = useState('');
+  const [userId, setUserId] = useState(null);
   const navigate = useNavigate();
   useEffect(() => {
     const session = retrieveSession();
+    console.log(session);
     if (!session) {
       console.log('hey!');
       navigate('/');
     } else {
       session.role == 'doctor' ? setMode(0) : setMode(1);
+      setUserId(session.user);
       setUsername(`${session.lastname}, ${session.name}`);
     }
   }, [navigate]);
+
+  const goTo = (url) => {
+    console.log(url);
+    navigate(url);
+  };
 
   const toggleDrawer = (open) => (event) => {
     if (
@@ -68,6 +76,9 @@ const Navbar = () => {
                     sx={{
                       display: { xs: 'none', sm: 'block' },
                       backgroundColor: 'inherit',
+                    }}
+                    onClick={() => {
+                      goTo(route.route);
                     }}>
                     {route.label}
                   </Button>
@@ -91,7 +102,7 @@ const Navbar = () => {
         </Toolbar>
       </AppBar>
 
-      <Drawer
+      {/* <Drawer
         anchor='left'
         open={drawerOpen}
         onClose={toggleDrawer(false)}>
@@ -104,7 +115,7 @@ const Navbar = () => {
             </ListItem>
           ))}
         </List>
-      </Drawer>
+      </Drawer> */}
     </>
   );
 };

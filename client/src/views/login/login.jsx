@@ -30,11 +30,21 @@ function Login() {
     console.log(data);
     if (data && data.id) {
       const token = 'Bearer ' + data.token;
-      const userData = { token: token, user: data.id, role: data.role, name: data.name, lastname: data.lastname };
+      const userData = {
+        token: token,
+        user: data.id,
+        role: data.role,
+        name: data.name,
+        lastname: data.lastname,
+      };
       axios.defaults.headers.common.Authorization = token;
       console.log('userdata', userData);
       sessionStorage.setItem('userData', JSON.stringify(userData));
-      handleRedirect('patients', { usr: userData });
+      if (data.role === 'doctor') {
+        handleRedirect('patients', { usr: userData });
+      } else {
+        handleRedirect('/patients/diets/actives/' + data.id, { usr: userData });
+      }
       setShowError(false);
     } else {
       setShowError(true);
