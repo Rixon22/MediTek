@@ -6,6 +6,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import Navbar from '../../../components/navbar/Navbar';
+import { retrieveSession } from '../../../helpers/retrieveSession';
 
 function PatientDiets() {
   const { patient_id } = useParams();  // Obtenemos el ID del paciente desde la URL
@@ -20,7 +21,7 @@ function PatientDiets() {
         // Obtener el token desde sessionStorage
         const userData = JSON.parse(sessionStorage.getItem('userData'));
         const token = userData ? userData.token : null;
-
+        const session = retrieveSession();
         // Verificamos si el token existe, si no, mostramos un mensaje de error
         if (!token) {
           setError('No estás autenticado. Por favor, inicia sesión.');
@@ -29,7 +30,7 @@ function PatientDiets() {
         }
 
         // Realizamos la solicitud a la API pasando el token en los encabezados
-        const response = await axios.get(`http://localhost:3001/api/diets/active/${patient_id}`, {
+        const response = await axios.get(`http://localhost:3001/api/diets/active/${session.user}`, {
           headers: {
             Authorization: token,  // Token de autorización en el encabezado
           },

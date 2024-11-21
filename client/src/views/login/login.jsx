@@ -43,7 +43,7 @@ function Login() {
       if (data.role === 'doctor') {
         handleRedirect('patients', { usr: userData });
       } else {
-        handleRedirect('/patients/diets/actives/' + data.id, { usr: userData });
+        handleRedirect('/patients/diets/actives/', { usr: userData });
       }
       setShowError(false);
     } else {
