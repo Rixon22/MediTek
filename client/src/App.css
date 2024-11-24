@@ -47,10 +47,9 @@ button {
   justify-content: flex-end;
   padding: 0.5vh;
   cursor: pointer;
-
 }
 
-.theme-toggle-container-down{
+.theme-toggle-container-down {
   position: absolute;
   top: 45px;
   left: 0;
@@ -71,6 +70,10 @@ button {
   align-items: center;
   background-color: white;
   z-index: 999999;
+}
+
+.swal2-high-zindex {
+  z-index: 9999999 !important; /* Ensure it's above MUI's modal (1300 by default) */
 }
 
 .toggle-icon {

@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import { getRequest } from '../../helpers/requestHandler';
 import URLS from '../../constants/url';
+import PropTypes from 'prop-types';
 
 export default function ModalAssign({ closeModal }) {
   const [open] = useState(true);
@@ -117,3 +118,7 @@ export default function ModalAssign({ closeModal }) {
     </Modal>
   );
 }
+
+ModalAssign.propTypes = {
+  closeModal: PropTypes.func.isRequired,
+};

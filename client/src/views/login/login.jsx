@@ -38,7 +38,6 @@ function Login() {
         lastname: data.lastname,
       };
       axios.defaults.headers.common.Authorization = token;
-      console.log('userdata', userData);
       sessionStorage.setItem('userData', JSON.stringify(userData));
       if (data.role === 'doctor') {
         handleRedirect('patients', { usr: userData });

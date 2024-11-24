@@ -9,7 +9,6 @@ import {
   Container,
   Avatar,
   Button,
-  Paper,
 } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import Navbar from '../../../components/navbar/Navbar';
@@ -33,6 +32,7 @@ function PatientAppointments() {
         setLoading(false);
       } catch (err) {
         setError('Error al cargar las citas médicas');
+        console.error(err);
         setLoading(false);
       }
     };

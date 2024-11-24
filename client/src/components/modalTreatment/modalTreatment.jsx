@@ -20,7 +20,8 @@ import URLS from '../../constants/url';
 import DeleteIcon from '@mui/icons-material/Delete';
 import styles from './modalTreatment.module.css';
 import { retrieveSession } from '../../helpers/retrieveSession';
-
+import ShowError from '../../helpers/errorHandler';
+import SuccessHandler from '../../helpers/SuccessHandler/SuccessHandler';
 function ModalTreatment({ idPatient, closeModal }) {
   const [open] = useState(true);
   const [meds, setMeds] = useState([]); // All medications from the backend
@@ -29,12 +30,18 @@ function ModalTreatment({ idPatient, closeModal }) {
   const [description, setDescription] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [error, setError] = useState(null);
+  const [showError, setShowError] = useState(false);
+  const [errorFields, setErrorFields] = useState({});
 
   const handleClose = () => {
     closeModal(false);
   };
 
   useEffect(() => {
+    const today = new Date().toISOString().split('T')[0];
+    setStartDate(today);
+
     getRequest(URLS.dev + 'medications')
       .then((response) => {
         const { data } = response;
@@ -59,26 +66,26 @@ function ModalTreatment({ idPatient, closeModal }) {
       })
       .catch((error) => {
         console.error(error);
+        setError(error);
+        setShowError(true);
       });
   }, []);
 
   // Add a medication to the selected list
   const handleAddMed = (med) => {
     if (!selectedMeds.some((m) => m.id === med.id)) {
-      setSelectedMeds((prev) => [
-        ...prev,
-        { ...med, dose: '', frequency: '' }, // Add dose and frequency fields
-      ]);
+      setSelectedMeds((prev) => [...prev, { ...med, dose: '', frequency: '' }]);
+    } else {
+      setError({ message: '¡Este medicamento ya ha sido añadido!' });
+      setShowError(true);
     }
     console.log(selectedMeds);
   };
 
-  // Remove a medication from the selected list
   const handleRemoveMed = (medId) => {
     setSelectedMeds((prev) => prev.filter((m) => m.id !== medId));
   };
 
-  // Update dose or frequency for a selected medication
   const handleInputChange = (medId, field, value) => {
     setSelectedMeds((prev) =>
       prev.map((med) => (med.id === medId ? { ...med, [field]: value } : med))
@@ -89,6 +96,31 @@ function ModalTreatment({ idPatient, closeModal }) {
   const filteredMeds = meds.filter((med) =>
     med.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const validateBeforeSend = () => {
+    const errors = {};
+
+    if (!description) {
+      errors.description = 'La descripción es requerida!';
+    }
+    if (!startDate) {
+      errors.startDate = 'La fecha de inicio es requerida!';
+    }
+    if (!endDate) {
+      errors.endDate = 'La fecha de término es requerida!';
+    }
+    if (!selectedMeds.length) {
+      setError({ message: 'No se ha seleccionado ningún medicamento!' });
+      setShowError(true);
+      return false;
+    }
+
+    setErrorFields(errors); // Highlight fields with errors
+    if (Object.keys(errors).length > 0) {
+      return false;
+    }
+    return true;
+  };
 
   // Handle the assign button action
   const handleAssign = () => {
@@ -107,7 +139,9 @@ function ModalTreatment({ idPatient, closeModal }) {
         frequency: frequency,
       })),
     };
-
+    if (!validateBeforeSend()) {
+      return;
+    }
     postRequest(
       URLS.dev + 'treatment-medications/add-treatment-with-medications',
       payload
@@ -116,8 +150,15 @@ function ModalTreatment({ idPatient, closeModal }) {
         console.log('Assigned successfully:', response);
         const { data } = response;
         console.log('server sent:', data);
+        const successManager = new SuccessHandler(
+          'Tratamiento Asignado!',
+          'Se ha registrado el tratamiento correctamente.'
+        );
+        successManager.show();
       })
       .catch((error) => {
+        setError(error);
+        setShowError(true);
         console.error('Error assigning treatment:', error);
       });
   };
@@ -142,6 +183,7 @@ function ModalTreatment({ idPatient, closeModal }) {
             p: 4,
             borderRadius: 2,
             border: 'solid 1px #f1f1f11e',
+            zIndex: 1,
           }}>
           <Typography
             id='modal-title'
@@ -228,6 +270,7 @@ function ModalTreatment({ idPatient, closeModal }) {
                               fullWidth
                               label='Dosis'
                               variant='outlined'
+                              required={true}
                               sx={{ margin: 0, height: '25px' }}
                               value={med.dose}
                               onChange={(e) =>
@@ -285,7 +328,12 @@ function ModalTreatment({ idPatient, closeModal }) {
                 label='Descripción'
                 variant='outlined'
                 value={description}
-                onChange={(e) => setDescription(e.target.value)}
+                error={!!errorFields.description} // Highlight if there's an error
+                helperText={errorFields.description} // Display error message
+                onChange={(e) => {
+                  setDescription(e.target.value);
+                  setErrorFields((prev) => ({ ...prev, description: '' })); // Clear error when editing
+                }}
               />
             </Grid>
             <Grid
@@ -298,8 +346,13 @@ function ModalTreatment({ idPatient, closeModal }) {
                 label='Fecha de Inicio'
                 type='date'
                 variant='outlined'
-                InputLabelProps={{ shrink: true }}
-                onChange={(e) => setStartDate(e.target.value)}
+                value={startDate}
+                error={!!errorFields.startDate} // Highlight if there's an error
+                helperText={errorFields.startDate} // Display error message
+                onChange={(e) => {
+                  setStartDate(e.target.value);
+                  setErrorFields((prev) => ({ ...prev, startDate: '' })); // Clear error when editing
+                }}
               />
             </Grid>
             <Grid
@@ -312,8 +365,12 @@ function ModalTreatment({ idPatient, closeModal }) {
                 label='Fecha de Fin'
                 type='date'
                 variant='outlined'
-                InputLabelProps={{ shrink: true }}
-                onChange={(e) => setEndDate(e.target.value)}
+                error={!!errorFields.endDate} // Highlight if there's an error
+                helperText={errorFields.endDate} // Display error message
+                onChange={(e) => {
+                  setEndDate(e.target.value);
+                  setErrorFields((prev) => ({ ...prev, endDate: '' })); // Clear error when editing
+                }}
               />
             </Grid>
           </Grid>
@@ -340,6 +397,14 @@ function ModalTreatment({ idPatient, closeModal }) {
           </Box>
         </Box>
       </Modal>
+
+      {showError ? (
+        <ShowError
+          error={error}
+          open={showError}
+          onClose={() => setShowError(false)}
+        />
+      ) : null}
     </div>
   );
 }
