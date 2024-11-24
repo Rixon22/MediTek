@@ -23,6 +23,11 @@ const createTreatmentWithMedications = (req, res) => {
         return res.status(400).json({ error: "Faltan campos obligatorios para el tratamiento" });
     }
 
+    // Verificar que los tipos de datos sean correctos
+    if (typeof patient_id !== "number" || typeof doctor_id !== "number" || typeof description !== "string" || typeof start_date !== "string", typeof end_date !== "string") {
+        return res.status(400).json({ error: "Tipos de datos incorrectos para el tratamiento" });
+    }
+
     // Verificar que el paciente y el doctor existan (opcional, dependiendo de la lógica de negocio)
     db.get(`SELECT 1 FROM patients WHERE id = ?`, [patient_id], (err, row) => {
         if (err || !row) {

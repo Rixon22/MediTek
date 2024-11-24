@@ -16,6 +16,11 @@ const createDiet = (req, res) => {
     if (!patient_id || !doctor_id || !description || !start_date || !end_date) {
         return res.status(400).json({ error: "Faltan campos requeridos" });
     }
+    // Verificar que los tipos de datos sean correctos
+    if (typeof patient_id !== 'number' || typeof doctor_id !== 'number' || typeof description !== 'string' ||
+        typeof start_date !== 'string' || typeof end_date !== 'string' || typeof time !== 'string' || typeof dish_id !== 'number') {
+        return res.status(400).json({ error: "Tipos de datos incorrectos" });
+    }
 
     db.run(`INSERT INTO diets (patient_id, doctor_id, description, start_date, end_date, time, dish_id) 
             VALUES (?, ?, ?, ?, ?, ?, ?)`,

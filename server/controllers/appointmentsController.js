@@ -36,7 +36,42 @@ const getAppointmentsByPatient = (req, res) => {
     });
 };
 
+
+// Crear una nueva cita médica 
+const createAppointment = (req, res) => {
+    const { patient_id, doctor_id, appointment_date, reason, location } = req.body;
+
+    // Verificar si los campos requeridos están presentes
+    if (!patient_id || !doctor_id || !appointment_date || !reason || !location) {
+        return res.status(400).json({ error: "Faltan campos requeridos" });
+    }
+
+    // Verificar que los tipos de datos sean correctos
+    if (typeof patient_id !== 'number' || typeof doctor_id !== 'number' || typeof appointment_date !== 'string' ||
+        typeof reason !== 'string' || typeof location !== 'string') {
+        return res.status(400).json({ error: "Tipos de datos incorrectos" });
+    }
+
+    db.run(`INSERT INTO medical_appointments (patient_id, doctor_id, appointment_date, reason, location) 
+            VALUES (?, ?, ?, ?, ?)`,
+
+        [patient_id, doctor_id, appointment_date, reason, location], function (err) {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+            res.status(201).json({
+                id: this.lastID,
+                patient_id,
+                doctor_id,
+                appointment_date,
+                reason,
+                location
+            });
+        });
+};
+
 // Exportar las funciones del controlador
 module.exports = {
     getAppointmentsByPatient,
+    createAppointment
 };
