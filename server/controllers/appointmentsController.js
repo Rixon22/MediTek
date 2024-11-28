@@ -28,7 +28,7 @@ const getAppointmentsByPatient = (req, res) => {
 
         // Si no hay citas médicas, devolvemos un mensaje informando que no se encontraron citas
         if (rows.length === 0) {
-            return res.status(404).json({ message: 'No se encontraron citas médicas para este paciente.' });
+            return res.status(200).json({ message: 'No se encontraron citas médicas para este paciente.' });
         }
 
         // Enviar las citas médicas

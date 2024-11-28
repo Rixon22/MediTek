@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useParams } from 'react-router-dom';
 import {
-  Grid,
   Card,
   CardContent,
   Typography,
@@ -9,9 +9,13 @@ import {
   Container,
   Avatar,
   Button,
+  Paper,
+  TextField,
 } from '@mui/material';
-import { useParams } from 'react-router-dom';
 import Navbar from '../../../components/navbar/Navbar';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { retrieveSession } from '../../../helpers/retrieveSession';
 
 function PatientAppointments() {
@@ -19,14 +23,32 @@ function PatientAppointments() {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(new Date()); // Para manejar la fecha actual
 
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
+        const userData = JSON.parse(sessionStorage.getItem('userData'));
+        const token = userData ? userData.token : null;
         const session = retrieveSession();
+
+        // Verificamos si el token existe
+        if (!token) {
+          setError('No estás autenticado. Por favor, inicia sesión.');
+          setLoading(false);
+          return;
+        }
+
+        // Realizamos la solicitud a la API pasando el token en los encabezados
         const response = await axios.get(
-          `http://localhost:3001/api/appointments/${session.user}`
+          `http://localhost:3001/api/appointments/${session.user}`,
+          {
+            headers: {
+              Authorization: token, // Agregamos el token de autorización
+            },
+          }
         );
+
         console.log(response);
         setAppointments(response.data);
         setLoading(false);
@@ -43,87 +65,82 @@ function PatientAppointments() {
   return (
     <>
       <Navbar />
-      <Container maxWidth='lg'>
-        <Box sx={{ mt: 4 }}>
-          <Typography
-            variant='h4'
-            gutterBottom>
-            Citas Médicas
-          </Typography>
+      <Container className="mt-4">
+        <Typography variant="h4" gutterBottom>
+          Citas Médicas
+        </Typography>
 
-          {loading ? (
-            <Typography>Cargando...</Typography> // Mientras se cargan las citas, mostramos este mensaje
-          ) : error ? (
-            <Typography color='error'>{error}</Typography> // Si ocurre un error, mostramos este mensaje de error
-          ) : (
-            <Grid
-              container
-              spacing={3}>
-              {appointments.length > 0 ? (
-                appointments.map((appointment) => (
-                  <Grid
-                    item
-                    xs={12}
-                    sm={6}
-                    md={4}
-                    key={appointment.id}>
-                    <Card>
-                      <CardContent>
-                        <Avatar sx={{ bgcolor: 'primary.main', mb: 2 }}>
-                          {appointment.reason[0].toUpperCase()}{' '}
-                          {/* Inicial del motivo de la cita */}
-                        </Avatar>
-                        <Typography variant='h6'>
-                          {appointment.reason}
-                        </Typography>
-                        <Typography
-                          variant='body1'
-                          color='text.secondary'>
-                          Doctor: {appointment.doctor_name}{' '}
-                          {appointment.doctor_last_name}
-                        </Typography>
-                        <Typography
-                          variant='body2'
-                          color='text.secondary'>
-                          Fecha:{' '}
-                          {new Date(
-                            appointment.appointment_date
-                          ).toLocaleString()}
-                        </Typography>
+        {/* Calendario centrado */}
+        <Paper sx={{ padding: 2, marginBottom: 4 }}>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DatePicker
+                label="Fecha Actual"
+                value={selectedDate}
+                onChange={() => {}} // No permitimos cambiar la fecha
+                disabled // Deshabilitamos el DatePicker para que sea solo visualización
+                renderInput={(params) => <TextField {...params} fullWidth />}
+              />
+            </LocalizationProvider>
+          </Box>
+        </Paper>
 
-                        {/* Incrustar el mapa de Google */}
-                        <Box sx={{ mt: 2 }}>
-                          <Typography
-                            variant='body2'
-                            color='text.secondary'>
-                            Ubicación:
-                          </Typography>
-                          <iframe
-                            src={appointment.location}
-                            width='100%'
-                            height='200'
-                            style={{ border: 0 }}
-                            allowFullScreen=''
-                            loading='lazy'></iframe>
-                        </Box>
+        {loading ? (
+          <Typography>Cargando...</Typography> // Mientras se cargan las citas, mostramos este mensaje
+        ) : error ? (
+          <Typography color="error">{error}</Typography> // Si ocurre un error, mostramos este mensaje de error
+        ) : (
+          <div className="row">
+            {appointments.length > 0 ? (
+              appointments.map((appointment) => (
+                <div className="col-12 col-md-6 col-lg-4 mb-4" key={appointment.id}>
+                  <Card className="h-100">
+                    <CardContent>
+                      <Avatar sx={{ bgcolor: 'primary.main', mb: 2 }}>
+                        {appointment.reason[0].toUpperCase()} {/* Inicial de la razón */}
+                      </Avatar>
+                      <Typography variant="h6">{appointment.reason}</Typography>
+                      <Typography variant="body1" color="text.secondary">
+                        Doctor: {appointment.doctor_name} {appointment.doctor_last_name}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        Fecha:{" "}
+                        {new Date(appointment.appointment_date).toLocaleString()}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        Ubicación:
+                      </Typography>
+                      {/* Agregamos el iframe para mostrar el mapa */}
+                      <Box sx={{ mb: 2 }}>
+                        <iframe
+                          src={appointment.location}
+                          title="Mapa de ubicación"
+                          allowFullScreen
+                          loading="lazy"
+                          style={{ border: 0, width: '100%', height: '200px' }}
+                        ></iframe>
+                      </Box>
 
-                        <Box sx={{ mt: 2 }}>
-                          <Button
-                            variant='contained'
-                            color='primary'>
-                            Ver Detalles
-                          </Button>
-                        </Box>
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                ))
-              ) : (
-                <Typography>No tienes citas médicas programadas.</Typography>
-              )}
-            </Grid>
-          )}
-        </Box>
+                      <Box sx={{ mt: 2 }}>
+                        <Button variant="contained" color="primary" fullWidth>
+                          Ver Detalles
+                        </Button>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                </div>
+              ))
+            ) : (
+              <Typography>No tienes citas médicas programadas.</Typography> // Si no hay citas, mostramos este mensaje
+            )}
+          </div>
+        )}
       </Container>
     </>
   );

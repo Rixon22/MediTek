@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
-  Grid,
   Card,
   CardContent,
   Typography,
@@ -96,120 +95,81 @@ function PatientTreatments() {
 
   return (
     <>
-        <Navbar />
-      <Container maxWidth='lg'>
-        <Box sx={{ mt: 4 }}>
-          <Typography
-            variant='h4'
-            gutterBottom>
-            Tratamientos Activos
-          </Typography>
+      <Navbar />
+      <Container maxWidth="lg" className="mt-4">
+        <Typography variant="h4" gutterBottom>
+          Tratamientos Activos
+        </Typography>
 
-          {/* Calendario centrado */}
-          <Paper sx={{ padding: 2, marginBottom: 4 }}>
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DatePicker
-                  label='Fecha Actual'
-                  value={selectedDate}
-                  onChange={() => {}} // No se puede cambiar la fecha
-                  disabled // Deshabilitamos la capacidad de cambiar la fecha
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      fullWidth
-                    />
-                  )}
-                />
-              </LocalizationProvider>
-            </Box>
-          </Paper>
+        {/* Calendario centrado */}
+        <Paper sx={{ padding: 2, marginBottom: 4 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DatePicker
+                label="Fecha Actual"
+                value={selectedDate}
+                onChange={() => {}} // No se puede cambiar la fecha
+                disabled // Deshabilitamos la capacidad de cambiar la fecha
+                renderInput={(params) => <TextField {...params} fullWidth />}
+              />
+            </LocalizationProvider>
+          </Box>
+        </Paper>
 
-          {loading ? (
-            <Typography>Cargando...</Typography> // Mientras se cargan los tratamientos, mostramos este mensaje
-          ) : error ? (
-            <Typography color='error'>{error}</Typography> // Si ocurre un error, mostramos este mensaje de error
-          ) : (
-            <Grid
-              container
-              spacing={3}>
-              {treatments.length > 0 ? (
-                treatments.map((treatment) => (
-                  <Grid
-                    item
-                    xs={12}
-                    sm={6}
-                    md={4}
-                    key={treatment.treatment_id}>
-                    <Card>
-                      <CardContent>
-                        <Avatar sx={{ bgcolor: 'primary.main', mb: 2 }}>
-                          {treatment.treatment_description[0].toUpperCase()}{' '}
-                          {/* Inicial del tratamiento */}
-                        </Avatar>
-                        <Typography variant='h6'>
-                          {treatment.treatment_description}
-                        </Typography>
-                        <Typography
-                          variant='body1'
-                          color='text.secondary'>
-                          Tratado por: {treatment.doctor_name}
-                        </Typography>
-                        <Typography
-                          variant='body2'
-                          color='text.secondary'>
-                          Fecha de inicio:{' '}
-                          {new Date(treatment.start_date).toLocaleDateString()}
-                        </Typography>
-                        <Typography
-                          variant='body2'
-                          color='text.secondary'>
-                          Fecha de fin:{' '}
-                          {new Date(treatment.end_date).toLocaleDateString()}
-                        </Typography>
+        {loading ? (
+          <Typography>Cargando...</Typography> // Mientras se cargan los tratamientos, mostramos este mensaje
+        ) : error ? (
+          <Typography color="error">{error}</Typography> // Si ocurre un error, mostramos este mensaje de error
+        ) : (
+          <div className="row">
+            {treatments.length > 0 ? (
+              treatments.map((treatment) => (
+                <div className="col-12 col-md-6 col-lg-4 mb-4" key={treatment.treatment_id}>
+                  <Card className="h-100">
+                    <CardContent>
+                      <Avatar sx={{ bgcolor: 'primary.main', mb: 2 }}>
+                        {treatment.treatment_description[0].toUpperCase()} {/* Inicial del tratamiento */}
+                      </Avatar>
+                      <Typography variant="h6">{treatment.treatment_description}</Typography>
+                      <Typography variant="body1" color="text.secondary">
+                        Tratado por: {treatment.doctor_name}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        Fecha de inicio: {new Date(treatment.start_date).toLocaleDateString()}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        Fecha de fin: {new Date(treatment.end_date).toLocaleDateString()}
+                      </Typography>
 
-                        <Typography
-                          variant='h6'
-                          sx={{ mt: 2 }}>
-                          Medicamentos:
-                        </Typography>
-                        <ul>
-                          {treatment.medications.map((medication, index) => (
-                            <li key={index}>
-                              <Typography variant='body2'>
-                                {medication.medication_name} (
-                                {medication.medication_dose})
-                              </Typography>
-                              <Typography
-                                variant='body2'
-                                color='text.secondary'>
-                                Frecuencia: {medication.medication_frequency}
-                              </Typography>
-                            </li>
-                          ))}
-                        </ul>
-                        <Box sx={{ mt: 2 }}>
-                          <Button
-                            variant='contained'
-                            color='primary'>
-                            Continuar tratamiento
-                          </Button>
-                        </Box>
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                ))
-              ) : (
-                <Typography>No tienes tratamientos activos.</Typography> // Si no hay tratamientos activos, mostramos este mensaje
-              )}
-            </Grid>
-          )}
-        </Box>
+                      <Typography variant="h6" sx={{ mt: 2 }}>
+                        Medicamentos:
+                      </Typography>
+                      <ul>
+                        {treatment.medications.map((medication, index) => (
+                          <li key={index}>
+                            <Typography variant="body2">
+                              {medication.medication_name} ({medication.medication_dose})
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                              Frecuencia: {medication.medication_frequency}
+                            </Typography>
+                          </li>
+                        ))}
+                      </ul>
+                      <Box sx={{ mt: 2 }}>
+                        <Button variant="contained" color="primary" fullWidth>
+                          Continuar tratamiento
+                        </Button>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                </div>
+              ))
+            ) : (
+              <Typography>No tienes tratamientos activos.</Typography> // Si no hay tratamientos activos, mostramos este mensaje
+            )}
+          </div>
+        )}
       </Container>
     </>
   );

@@ -93,7 +93,6 @@ const getPatientDetails = (req, res) => {
 
 // Obtener todos los pacientes
 const getPatients = (req, res) => {
-    console.log('Obteniendo pacientes...');
     db.all("SELECT * FROM patients", [], (err, rows) => {
         if (err) {
             return res.status(500).json({ error: err.message });

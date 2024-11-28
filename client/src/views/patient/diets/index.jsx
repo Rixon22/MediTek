@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
-  Grid,
   Card,
   CardContent,
   Typography,
@@ -66,103 +65,75 @@ function PatientDiets() {
   return (
     <>
       <Navbar />
-      <Container maxWidth='lg'>
-        <Box sx={{ mt: 4 }}>
-          <Typography
-            variant='h4'
-            gutterBottom>
-            Dietas Activas
-          </Typography>
+      <Container maxWidth="lg" className="mt-4">
+        <Typography variant="h4" gutterBottom>
+          Dietas Activas
+        </Typography>
 
-          {/* Calendario centrado */}
-          <Paper sx={{ padding: 2, marginBottom: 4 }}>
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <DatePicker
-                  label='Fecha Actual'
-                  value={selectedDate}
-                  onChange={() => {}} // No se puede cambiar la fecha
-                  disabled // Deshabilitamos la capacidad de cambiar la fecha
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      fullWidth
-                    />
-                  )}
-                />
-              </LocalizationProvider>
-            </Box>
-          </Paper>
+        {/* Calendario centrado */}
+        <Paper sx={{ padding: 2, marginBottom: 4 }}>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DatePicker
+                label="Fecha Actual"
+                value={selectedDate}
+                onChange={() => {}} // No se puede cambiar la fecha
+                disabled // Deshabilitamos la capacidad de cambiar la fecha
+                renderInput={(params) => <TextField {...params} fullWidth />}
+              />
+            </LocalizationProvider>
+          </Box>
+        </Paper>
 
-          {loading ? (
-            <Typography>Cargando...</Typography> // Mientras se cargan las dietas, mostramos este mensaje
-          ) : error ? (
-            <Typography color='error'>{error}</Typography> // Si ocurre un error, mostramos un mensaje de error
-          ) : (
-            <Grid
-              container
-              spacing={3}>
-              {dietas.length > 0 ? (
-                dietas.map((dieta) => (
-                  <Grid
-                    item
-                    xs={12}
-                    sm={6}
-                    md={4}
-                    key={dieta.id}>
-                    <Card>
-                      <CardContent>
-                        <Avatar sx={{ bgcolor: 'primary.main', mb: 2 }}>
-                          {dieta.dish_name[0].toUpperCase()}{' '}
-                          {/* Inicial del plato */}
-                        </Avatar>
-                        <Typography variant='h6'>{dieta.dish_name}</Typography>
-                        <Typography
-                          variant='body1'
-                          color='text.secondary'>
-                          {dieta.description} {/* Descripción de la dieta */}
-                        </Typography>
-                        <Typography
-                          variant='body2'
-                          color='text.secondary'>
-                          Fecha de inicio:{' '}
-                          {new Date(dieta.start_date).toLocaleDateString()}
-                        </Typography>
-                        <Typography
-                          variant='body2'
-                          color='text.secondary'>
-                          Fecha de fin:{' '}
-                          {new Date(dieta.end_date).toLocaleDateString()}
-                        </Typography>
-                        <Typography
-                          variant='body2'
-                          color='text.secondary'>
-                          Hora: {dieta.time} {/* Hora de la dieta */}
-                        </Typography>
-                        {dieta.is_active === 1 && (
-                          <Box sx={{ mt: 2 }}>
-                            <Button
-                              variant='contained'
-                              color='primary'>
-                              Seguir dieta
-                            </Button>
-                          </Box>
-                        )}
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                ))
-              ) : (
-                <Typography>No tienes dietas activas.</Typography> // Si no hay dietas activas, mostramos este mensaje
-              )}
-            </Grid>
-          )}
-        </Box>
+        {loading ? (
+          <Typography>Cargando...</Typography> // Mientras se cargan las dietas, mostramos este mensaje
+        ) : error ? (
+          <Typography color="error">{error}</Typography> // Si ocurre un error, mostramos este mensaje de error
+        ) : (
+          <div className="row">
+            {dietas.length > 0 ? (
+              dietas.map((dieta) => (
+                <div className="col-12 col-md-6 col-lg-4 mb-4" key={dieta.id}>
+                  <Card className="h-100">
+                    <CardContent>
+                      <Avatar sx={{ bgcolor: 'primary.main', mb: 2 }}>
+                        {dieta.dish_name[0].toUpperCase()} {/* Inicial del plato */}
+                      </Avatar>
+                      <Typography variant="h6">{dieta.dish_name}</Typography>
+                      <Typography variant="body1" color="text.secondary">
+                        {dieta.description} {/* Descripción de la dieta */}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        Fecha de inicio: {new Date(dieta.start_date).toLocaleDateString()}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        Fecha de fin: {new Date(dieta.end_date).toLocaleDateString()}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        Hora: {dieta.time} {/* Hora de la dieta */}
+                      </Typography>
+                      {dieta.is_active === 1 && (
+                        <Box sx={{ mt: 2 }}>
+                          <Button variant="contained" color="primary" fullWidth>
+                            Seguir dieta
+                          </Button>
+                        </Box>
+                      )}
+                    </CardContent>
+                  </Card>
+                </div>
+              ))
+            ) : (
+              <Typography>No tienes dietas activas.</Typography> // Si no hay dietas activas, mostramos este mensaje
+            )}
+          </div>
+        )}
       </Container>
     </>
   );
