@@ -20,9 +20,8 @@ const Navbar = () => {
   const navigate = useNavigate();
   useEffect(() => {
     const session = retrieveSession();
-    console.log(session);
+
     if (!session) {
-      console.log('hey!');
       navigate('/');
     } else {
       session.role == 'doctor' ? setMode(0) : setMode(1);
@@ -32,7 +31,6 @@ const Navbar = () => {
   }, [navigate]);
 
   const goTo = (url) => {
-    console.log(url);
     navigate(url);
   };
 

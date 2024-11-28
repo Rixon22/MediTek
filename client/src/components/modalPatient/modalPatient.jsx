@@ -28,6 +28,7 @@ const ModalPatient = ({ selectedPatient, closeModal }) => {
             boxShadow: 24,
             p: 4,
             borderRadius: 2,
+            zIndex: 1,
           }}>
           <Typography
             id='modal-title'
