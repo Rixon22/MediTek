@@ -24,7 +24,7 @@ const createTreatmentWithMedications = (req, res) => {
     }
 
     // Verificar que los tipos de datos sean correctos
-    if (typeof patient_id !== "number" || typeof doctor_id !== "number" || typeof description !== "string" || typeof start_date !== "string", typeof end_date !== "string") {
+    if (typeof patient_id !== "number" || typeof doctor_id !== "number" || typeof description !== "string" || typeof start_date !== "string" || typeof end_date !== "string") {
         return res.status(400).json({ error: "Tipos de datos incorrectos para el tratamiento" });
     }
 
@@ -45,6 +45,7 @@ const createTreatmentWithMedications = (req, res) => {
             db.run(
                 `INSERT INTO treatments (patient_id, doctor_id, description, start_date, end_date) 
                  VALUES (?, ?, ?, ?, ?)`,
+
                 [patient_id, doctor_id, description, start_date, end_date],
                 function (err) {
                     if (err) {
@@ -85,6 +86,7 @@ const createTreatmentWithMedications = (req, res) => {
         });
     });
 };
+
 
 // Agregar medicamento a un tratamiento
 const createTreatmentMedication = (req, res) => {
