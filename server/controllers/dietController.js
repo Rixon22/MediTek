@@ -42,6 +42,53 @@ const createDiet = (req, res) => {
         });
 };
 
+// Obtener los detalles de una dieta (incluyendo sus tablas relacionadas)
+const getDietDetails = (req, res) => {
+    const { diet_id } = req.params;
+
+    // Verificar que el id sea un número
+    if (isNaN(diet_id)) {
+        return res.status(400).json({ error: "ID de dieta inválido" });
+    }
+
+    db.get(` SELECT 
+        d.id AS diet_id,
+        p.first_name AS patient_first_name,
+        p.last_name AS patient_last_name,
+        doc.first_name AS doctor_first_name,
+        doc.last_name AS doctor_last_name,
+        d.description AS diet_description,
+        d.start_date AS diet_start_date,
+        d.end_date AS diet_end_date,
+        d.time AS diet_time,
+        dis.name AS dish_name,
+        dis.description AS dish_description,
+        ing.name AS ingredient_name,
+        di.quantity AS ingredient_quantity
+    FROM
+        diets d
+    JOIN
+        patients p ON d.patient_id = p.id
+    JOIN
+        doctors doc ON d.doctor_id = doc.id
+    JOIN
+        dishes dis ON d.dish_id = dis.id
+    JOIN
+        dish_ingredients di ON dis.id = di.dish_id
+    JOIN
+        ingredients ing ON di.ingredient_id = ing.id
+    WHERE
+        d.id = ?`, [diet_id], (err, row) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        if (!row) {
+            return res.status(404).json({ message: "Dieta no encontrada" });
+        }
+        res.json(row);
+    });
+};
+
 // Obtener las dietas activas de un paciente asignadas a un doctor específico
 const getActiveDietsForPatient = (req, res) => {
     const { patient_id, doctor_id } = req.params;
@@ -140,5 +187,6 @@ module.exports = {
     getAllDietsForPatient,  // Ahora correctamente cerrada
     getActiveDietsForDoctor,
     updateDiet,
-    deleteDiet
+    deleteDiet,
+    getDietDetails
 };

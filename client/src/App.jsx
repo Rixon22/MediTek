@@ -13,6 +13,7 @@ import Patients from './views/doctor/patients/patients';
 import PatientDiets from './views/patient/diets';
 import PatientTreatments from './views/patient/treatments';
 import PatientAppointments from './views/patient/appointments';
+import DietDetails from './views/patient/dietDetail';
 
 function App() {
   const [darkMode, setDarkMode] = useState(false);
@@ -62,6 +63,10 @@ function App() {
           <Route
             path='/patients/appointments'
             element={<PatientAppointments />}
+          />
+          <Route
+            path='/patients/diets/:id'
+            element={<DietDetails />}
           />
         </Routes>
       </Router>

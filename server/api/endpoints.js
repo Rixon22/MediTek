@@ -38,6 +38,7 @@ router.get('/diets/active/:patient_id', authenticateToken, dietController.getAll
 router.get('/diets/:doctor_id/active', authenticateToken, dietController.getActiveDietsForDoctor); // Obtener todas las dietas activas de un doctor
 router.put('/diets/:id', authenticateToken, dietController.updateDiet); // Actualizar una dieta por ID
 router.delete('/diets/:id', authenticateToken, dietController.deleteDiet); // Eliminar una dieta por ID
+router.get('/diets/details/:diet_id', authenticateToken, dietController.getDietDetails); // Obtener detalles de una dieta (incluyendo sus tablas relacionadas)
 
 // TABLAS QUE INTERACTUAN CON TRATAMIENTOS
 

@@ -17,13 +17,14 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import Navbar from '../../../components/navbar/Navbar';
 import { retrieveSession } from '../../../helpers/retrieveSession';
+import { useNavigate } from 'react-router-dom';
 
 function PatientDiets() {
-  const { patient_id } = useParams(); // Obtenemos el ID del paciente desde la URL
   const [dietas, setDietas] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedDate, setSelectedDate] = useState(new Date()); // Para manejar la fecha actual
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchDietas = async () => {
@@ -61,6 +62,11 @@ function PatientDiets() {
 
     fetchDietas();
   }, []); // El efecto se ejecuta cada vez que cambia el ID del paciente
+
+  const handeDietClick = (dietId) => () => {
+    // Redirigir a la página de detalle de dieta
+    navigate(`/patients/diets/${dietId}`);
+  };
 
   return (
     <>
@@ -120,7 +126,7 @@ function PatientDiets() {
                       </Typography>
                       {dieta.is_active === 1 && (
                         <Box sx={{ mt: 2 }}>
-                          <Button variant="contained" color="primary" fullWidth>
+                          <Button variant="contained" color="primary" fullWidth onClick={handeDietClick(dieta.id)}>
                             Seguir dieta
                           </Button>
                         </Box>
