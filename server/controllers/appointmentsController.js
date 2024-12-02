@@ -70,8 +70,52 @@ const createAppointment = (req, res) => {
         });
 };
 
+// Obtener una cita con todos los detalles
+const getAppointmentDetailsById = (req, res) => {
+    const { appointment_id } = req.params;
+
+    const query = `
+        SELECT 
+            ma.id, 
+            ma.appointment_date, 
+            ma.reason, 
+            ma.location,
+            d.first_name AS doctor_name, 
+            d.last_name AS doctor_last_name, 
+            c.name AS clinic_name,
+            c.address AS clinic_address,
+            p.first_name AS patient_name, 
+            p.last_name AS patient_last_name
+        FROM 
+            medical_appointments ma
+        JOIN 
+            doctors d ON ma.doctor_id = d.id
+        JOIN 
+            patients p ON ma.patient_id = p.id
+        JOIN
+            clinics c ON d.clinic_id = c.id
+        WHERE ma.id = ?
+        
+    `;
+
+    db.get(query, [appointment_id], (err, row) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+
+        // Si no hay citas médicas, devolvemos un mensaje informando que no se encontraron citas
+        if (!row) {
+            return res.status(200).json({ message: 'No se encontró la cita médica solicitada.' });
+        }
+
+        // Enviar las citas médicas
+        res.status(200).json(row);
+    });
+}
+
 // Exportar las funciones del controlador
 module.exports = {
     getAppointmentsByPatient,
-    createAppointment
+    createAppointment,
+    getAppointmentDetailsById
 };

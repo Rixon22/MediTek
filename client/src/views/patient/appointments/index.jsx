@@ -17,6 +17,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { retrieveSession } from '../../../helpers/retrieveSession';
+import { useNavigate } from 'react-router-dom';
 
 function PatientAppointments() {
   const { patient_id } = useParams(); // Obtenemos el ID del paciente desde la URL
@@ -24,6 +25,7 @@ function PatientAppointments() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedDate, setSelectedDate] = useState(new Date()); // Para manejar la fecha actual
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchAppointments = async () => {
@@ -61,6 +63,10 @@ function PatientAppointments() {
 
     fetchAppointments();
   }, [patient_id]); // Ejecuta el efecto cuando el patient_id cambia
+
+  const handleAppointmentClick = (id) => {
+    navigate(`/patients/appointments/detailed/${id}`);
+  }
 
   return (
     <>
@@ -128,7 +134,7 @@ function PatientAppointments() {
                       </Box>
 
                       <Box sx={{ mt: 2 }}>
-                        <Button variant="contained" color="primary" fullWidth>
+                        <Button variant="contained" color="primary" fullWidth onClick={() => handleAppointmentClick(appointment.id)}>
                           Ver Detalles
                         </Button>
                       </Box>

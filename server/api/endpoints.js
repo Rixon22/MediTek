@@ -65,6 +65,7 @@ router.put('/medications/:id', authenticateToken, medicationController.updateMed
 // Rutas para citas (protegidas)
 router.get('/appointments/:patient_id', authenticateToken, appointmentsController.getAppointmentsByPatient); // Obtener citas por paciente
 router.post('/appointments/add', authenticateToken, appointmentsController.createAppointment); // Crear una nueva cita
+router.get('/appointments/details/:appointment_id', authenticateToken, appointmentsController.getAppointmentDetailsById); // Obtener detalles de una cita
 
 // Exportar las rutas
 module.exports = router;
