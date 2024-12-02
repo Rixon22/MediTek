@@ -121,10 +121,40 @@ const deleteTreatment = (req, res) => {
     });
 };
 
+// Obtener tratamiento con todos sus detalles
+const getTreatmentDetailedById = (req, res) => {
+    const { treatment_id } = req.params;
+    
+    db.get(
+        `SELECT 
+            t.*, 
+            d.first_name || ' ' || d.last_name AS doctor_name, 
+            m.name AS medication_name, 
+            tm.dose AS medication_dose, 
+            tm.frequency AS medication_frequency
+         FROM treatments t
+         JOIN doctors d ON t.doctor_id = d.id
+         LEFT JOIN treatment_medications tm ON t.id = tm.treatment_id
+         LEFT JOIN medications m ON tm.medication_id = m.id
+         WHERE t.id = ?`,
+        [treatment_id],
+        (err, row) => {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+            if (!row) {
+                return res.status(404).json({ message: "Tratamiento no encontrado" });
+            }
+            res.json(row);
+        }
+    );
+}
+
 module.exports = {
     createTreatment,
     getTreatmentsByPatient,
     updateTreatment,
     deleteTreatment,
     getTreatmentsWithMedications,
+    getTreatmentDetailedById
 };

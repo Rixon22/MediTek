@@ -17,6 +17,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import Navbar from '../../../components/navbar/Navbar';
 import { retrieveSession } from '../../../helpers/retrieveSession';
+import { useNavigate } from 'react-router-dom';
 
 function PatientTreatments() {
   const { patient_id } = useParams(); // Obtenemos el ID del paciente desde la URL
@@ -24,7 +25,8 @@ function PatientTreatments() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedDate, setSelectedDate] = useState(new Date()); // Para manejar la fecha actual
-
+  const navigate = useNavigate();
+  
   useEffect(() => {
     const fetchTreatments = async () => {
       try {
@@ -93,6 +95,10 @@ function PatientTreatments() {
     fetchTreatments();
   }, [patient_id]); // El efecto se ejecuta cada vez que cambia el ID del paciente
 
+  const handleTreatmentDetailsClick = (treatment_id) => {
+    navigate(`/patients/treatments/detailed/${treatment_id}`); // Redirigir a la página de detalles del tratamiento
+  }
+
   return (
     <>
       <Navbar />
@@ -157,7 +163,7 @@ function PatientTreatments() {
                         ))}
                       </ul>
                       <Box sx={{ mt: 2 }}>
-                        <Button variant="contained" color="primary" fullWidth>
+                        <Button variant="contained" color="primary" fullWidth onClick={() => handleTreatmentDetailsClick(treatment.treatment_id)}>
                           Continuar tratamiento
                         </Button>
                       </Box>

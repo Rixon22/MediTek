@@ -48,6 +48,7 @@ router.get('/treatments/:patient_id', authenticateToken, treatmentController.get
 router.get('/treatments/details/:patient_id', authenticateToken, treatmentController.getTreatmentsWithMedications); // Obtener tratamientos con medicamentos y detalles por paciente
 router.put('/treatments/:id', authenticateToken, treatmentController.updateTreatment); // Actualizar un tratamiento por ID
 router.delete('/treatments/:id', authenticateToken, treatmentController.deleteTreatment); // Eliminar un tratamiento por ID
+router.get('/treatments/details/view/:treatment_id', authenticateToken, treatmentController.getTreatmentDetailedById); // Obtener detalles de un tratamiento (incluyendo sus tablas relacionadas)
 
 // Rutas para medicamentos de tratamientos (protegidas)
 router.post('/treatment-medications/add', authenticateToken, treatmentMedicationController.createTreatmentMedication); // Crear un nuevo medicamento de tratamiento
