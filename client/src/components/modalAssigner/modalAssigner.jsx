@@ -10,11 +10,14 @@ import {
   CardActions,
   Divider,
 } from '@mui/material';
-import { getRequest } from '../../helpers/requestHandler';
+import { getRequest, postRequest } from '../../helpers/requestHandler';
 import URLS from '../../constants/url';
 import PropTypes from 'prop-types';
+import { retrieveSession } from '../../helpers/retrieveSession';
+import ShowError from '../../helpers/errorHandler';
+import SuccessHandler from '../../helpers/SuccessHandler/SuccessHandler';
 
-export default function ModalAssign({ closeModal }) {
+export default function ModalAssign({ closeModal, current }) {
   const [open] = useState(true);
   const [patients, setPatients] = useState([]);
   const handleClose = () => {
@@ -26,7 +29,12 @@ export default function ModalAssign({ closeModal }) {
       .then((response) => {
         const { data } = response;
         console.log(data);
-        setPatients(data);
+        console.log(current);
+        const toSet = data.filter(
+          (patient) => !current.some((pat) => pat.id === patient.id)
+        );
+
+        setPatients(toSet);
       })
       .catch((error) => {
         console.error(error);
@@ -35,7 +43,21 @@ export default function ModalAssign({ closeModal }) {
 
   const handleAssign = (patientId) => {
     console.log(`Asignar patient with ID: ${patientId}`);
-    // Implement the assign logic here, such as calling an API or updating state
+    const user = retrieveSession();
+    postRequest(URLS.dev + 'patient/assing', {
+      patient: patientId,
+      doctor: user.user,
+    }).then((response) => {
+      const { data } = response;
+      console.log(data);
+      if (data.error) {
+        ShowError({ message: data.error });
+      }
+      const success = new SuccessHandler();
+      success.setTitle('Asignado con éxito');
+      success.setText('Se asignó al paciente correctamente');
+      success.show();
+    });
   };
 
   return (
@@ -63,7 +85,7 @@ export default function ModalAssign({ closeModal }) {
           id='modal-title'
           variant='h6'
           component='h2'>
-          Todos los Pacientes
+          Todos los Pacientes sin Asignar
         </Typography>
         <Box
           sx={{
@@ -121,4 +143,5 @@ export default function ModalAssign({ closeModal }) {
 
 ModalAssign.propTypes = {
   closeModal: PropTypes.func.isRequired,
+  current: PropTypes.array.isRequired,
 };

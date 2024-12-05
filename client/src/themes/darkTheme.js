@@ -7,8 +7,10 @@ const darkTheme = createTheme({
 
         }, secondary: {
             main: '#f48fb1', // Secondary color 
-
         },
+        terciary: {
+            main: "#848485"
+        }
     }, components: {
         MuiButton: {
             styleOverrides: {

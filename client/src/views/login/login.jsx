@@ -27,7 +27,6 @@ function Login() {
     };
     const response = await postRequest(URLS.dev + 'login', credentials);
     const { data } = response;
-    console.log(data);
     if (data && data.id) {
       const token = 'Bearer ' + data.token;
       const userData = {

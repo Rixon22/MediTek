@@ -4,11 +4,8 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
+import { Box } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import Drawer from '@mui/material/Drawer';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
 import routes from './routes';
 import { retrieveSession } from '../../helpers/retrieveSession';
 import { useNavigate } from 'react-router-dom';
@@ -60,12 +57,28 @@ const Navbar = () => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography
-            variant='h6'
+          <Box
             component='div'
             sx={{ flexGrow: 1 }}>
-            Bienvenido! {mode == 0 ? 'Dr. ' : ''} {username}
-          </Typography>
+            <Box
+              sx={{
+                backgroundColor: '',
+                height: '100%',
+                width: '125px',
+                display: 'flex',
+                justifyContent: 'center',
+              }}>
+              <Typography
+                variant='h5'
+                component='div'
+                color='background'
+                fontSize='1.7rem'
+                fontWeight='bold'
+                sx={{ flexGrow: 1, textAlign: 'center', textShadow: '1px 0.5px 0px #0000' }}>
+                MediTek
+              </Typography>
+            </Box>
+          </Box>
           {mode
             ? routes[1].map((route, index) => {
                 return (

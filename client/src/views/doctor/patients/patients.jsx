@@ -7,6 +7,7 @@ import URLS from '../../../constants/url';
 import styles from './patients.module.css';
 import { Button, List, ListItem } from '@mui/material';
 import Card from '@mui/material/Card';
+import { Box } from '@mui/material';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import ModalPatient from '../../../components/modalPatient/modalPatient';
@@ -17,6 +18,7 @@ export default function Patients() {
   const [selectedPatient, setSelectedPatient] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [showAssigner, setShowAssigner] = useState(false);
+  const [user, setUser] = useState(null);
   const getUserInfo = () => {
     const session = retrieveSession();
     if (!session) return;
@@ -29,9 +31,10 @@ export default function Patients() {
     retrieved.token = session.token;
     return session;
   };
-  const userData = getUserInfo();
 
   useEffect(() => {
+    const userData = getUserInfo();
+    setUser(userData);
     postRequest(URLS.dev + 'patients/doctor', { doctor_id: userData.user })
       .then((response) => {
         const { data } = response;
@@ -47,6 +50,17 @@ export default function Patients() {
     <>
       <Navbar />
       <div className={styles.controlRibbon}>
+        <Box
+          sx={{
+            flex: 1,
+          }}>
+          <Typography
+            variant='h5'
+            component='div'>
+            Bienvenido {user?.role == 'doctor' ? 'Dr.' : ''} {user?.name}{' '}
+            {user?.lastname}
+          </Typography>
+        </Box>
         <Button
           sx={{
             backgroundColor: '#1e5555', // Dark green background color
@@ -112,7 +126,9 @@ export default function Patients() {
         />
       ) : null}
       {showAssigner ? (
-        <ModalAssign closeModal={setShowAssigner}></ModalAssign>
+        <ModalAssign
+          closeModal={setShowAssigner}
+          current={patients}></ModalAssign>
       ) : null}
     </>
   );

@@ -69,5 +69,8 @@ router.get('/appointments/:patient_id', authenticateToken, appointmentsControlle
 router.post('/appointments/add', authenticateToken, appointmentsController.createAppointment); // Crear una nueva cita
 router.get('/appointments/details/:appointment_id', authenticateToken, appointmentsController.getAppointmentDetailsById); // Obtener detalles de una cita
 
+//ruta para asignar un paciente
+router.post('/patient/assing', authenticateToken, patientController.assignPatient);
+
 // Exportar las rutas
 module.exports = router;

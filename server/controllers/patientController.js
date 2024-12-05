@@ -11,6 +11,19 @@ const db = new sqlite3.Database(dbPath, (err) => {
     }
 });
 
+const assignPatient = (req, res) => {
+    const { patient, doctor, } = req.body;
+    const date = new Date();
+    const formatted = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+    db.run(`INSERT INTO patient_doctor (patient_id, doctor_id, assigned_date) VALUES (?, ?, ?);`,
+        [patient, doctor, formatted], function (error) {
+            if (error) {
+                return res.status(500).json({ error: error.message });
+            }
+            res.status(201).json({ success: 'paciente asignado correctamente' });
+        })
+}
+
 // Crear un nuevo paciente
 const createPatient = (req, res) => {
     const { first_name, last_name, birth_date, email, phone, password, curp } = req.body;
@@ -216,5 +229,6 @@ module.exports = {
     deletePatient,
     getPatients,
     getPatientsByDoctor,
-    getPatientDetailsById
+    getPatientDetailsById,
+    assignPatient
 };
