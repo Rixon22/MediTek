@@ -10,7 +10,6 @@ import {
   CardContent,
 } from '@mui/material';
 import PropTypes from 'prop-types';
-import styles from './ModalDiet.module.css';
 import { postRequest } from '../../helpers/requestHandler';
 import { retrieveSession } from '../../helpers/retrieveSession';
 import ShowError from '../../helpers/errorHandler';
@@ -51,6 +50,10 @@ function ModalDiet({ idPatient, closeModal }) {
     setSelectedPatient(patient);
   };
 
+  const handleSelectDish = (dish) => {
+    setSelectedDish(dish);
+  };
+
   const handleAssign = () => {
     if (!selectedPatient) {
       setError({ message: 'Seleccione un paciente' });
@@ -73,15 +76,14 @@ function ModalDiet({ idPatient, closeModal }) {
     const payload = {
       patient_id: selectedPatient.id,
       doctor_id: retrieveSession().user,
-      description,
+      description: description,
+      start_date: startDate,
+      end_date: endDate,
       time,
-      dishes: dishes.map((dish) => ({
-        dish_id: dish.id,
-        name: dish.name,
-      })),
+      dish_id: selectedDish.id, // Usar solo el ID del plato seleccionado
     };
 
-    postRequest(URLS.dev + '/assign-diet', payload)
+    postRequest(URLS.dev + '/diets/add', payload)
       .then((response) => {
         const successManager = new SuccessHandler(
           'Dieta Asignada!',
@@ -178,7 +180,13 @@ function ModalDiet({ idPatient, closeModal }) {
                   {dishes.map((dish) => (
                     <Card
                       key={dish.id}
-                      variant='outlined'>
+                      variant='outlined'
+                      onClick={() => handleSelectDish(dish)}
+                      sx={{
+                        border:
+                          selectedDish?.id === dish.id ? '2px solid green' : '',
+                        cursor: 'pointer',
+                      }}>
                       <CardContent>
                         <Typography variant='h6'>{dish.name}</Typography>
                         <Typography variant='body2'>
