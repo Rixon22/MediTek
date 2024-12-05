@@ -1,0 +1,33 @@
+.controlRibbon {
+    width: 100%;
+    display: flex;
+    height: auto;
+    min-height: 65px;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 16px;
+  }
+  
+  .listContainer {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    padding: 16px;
+    gap: 16px; /* Espaciado entre tarjetas */
+  }
+  
+  .card {
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .card:hover {
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  

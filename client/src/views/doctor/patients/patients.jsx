@@ -81,7 +81,7 @@ export default function Patients() {
               <ListItem
                 key={index}
                 disableGutters
-                sx={{ padding: 0, cursor: 'pointer' }}
+                sx={{ padding: 0, cursor: 'pointer', margin: 1 }}
                 onClick={() => {
                   setSelectedPatient(patient);
                   setShowModal(true);
