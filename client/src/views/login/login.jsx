@@ -133,7 +133,14 @@ function Login() {
                   href='#'
                   variant='body2'
                   onClick={() => handleRedirect('/register')}>
-                  {'¿No tienes cuenta?'}
+                  {'¿No tienes cuenta de medico?'}
+                </Link>
+                <br />
+                <Link
+                  href='#'
+                  variant='body2'
+                  onClick={() => handleRedirect('/register/patient')}>
+                  {'¿No tienes cuenta de paciente?'}
                 </Link>
               </Grid>
             </Grid>
