@@ -28,6 +28,7 @@ const Navbar = () => {
   }, [navigate]);
 
   const goTo = (url) => {
+    console.log(url);
     navigate(url);
   };
 
@@ -74,7 +75,11 @@ const Navbar = () => {
                 color='background'
                 fontSize='1.7rem'
                 fontWeight='bold'
-                sx={{ flexGrow: 1, textAlign: 'center', textShadow: '1px 0.5px 0px #0000' }}>
+                sx={{
+                  flexGrow: 1,
+                  textAlign: 'center',
+                  textShadow: '1px 0.5px 0px #0000',
+                }}>
                 MediTek
               </Typography>
             </Box>
@@ -105,6 +110,9 @@ const Navbar = () => {
                         sm: 'block',
                         backgroundColor: 'inherit',
                       },
+                    }}
+                    onClick={() => {
+                      goTo(route.route);
                     }}>
                     {route.label}
                   </Button>
