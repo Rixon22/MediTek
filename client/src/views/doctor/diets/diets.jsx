@@ -1,7 +1,7 @@
 import Navbar from '../../../components/navbar/Navbar';
 import { useEffect, useState } from 'react';
 import { retrieveSession } from '../../../helpers/retrieveSession';
-import { postRequest } from '../../../helpers/requestHandler';
+import { getRequest } from '../../../helpers/requestHandler';
 import User from '../../../models/user/user';
 import URLS from '../../../constants/url';
 import styles from './diets.module.css';
@@ -10,12 +10,12 @@ import Card from '@mui/material/Card';
 import { Box } from '@mui/material';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
-import ModalPatient from '../../../components/modalPatient/modalPatient';
-import ModalAssign from '../../../components/modalAssigner/modalAssigner';
+import ModalDiet from '../../../components/modalDiet/modalDiet';
+import DietDetails from '../../patient/dietDetail';
 
 export default function Diets() {
-  const [patients, setPatients] = useState([]);
-  const [selectedPatient, setSelectedPatient] = useState({});
+  const [diets, setDiets] = useState([]);
+  const [selectedDiet, setSelectedDiet] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [showAssigner, setShowAssigner] = useState(false);
   const [user, setUser] = useState(null);
@@ -36,11 +36,11 @@ export default function Diets() {
   useEffect(() => {
     const userData = getUserInfo();
     setUser(userData);
-    postRequest(URLS.dev + 'patients/doctor', { doctor_id: userData.user })
+    getRequest(URLS.dev + `/diets/${userData.user}/active`)
       .then((response) => {
         const { data } = response;
         console.log(data);
-        setPatients(data);
+        setDiets(data);
       })
       .catch((error) => {
         console.error(error);
@@ -76,6 +76,7 @@ export default function Diets() {
         >
           Añadir Nuevo
         </Button>
+        </Button>{' '}
       </div>
       <div className={styles.listContainer}>
         <List sx={{ width: '100%', mx: 'auto' }}>
@@ -129,19 +130,61 @@ export default function Diets() {
               </Card>
             </ListItem>
           ))}
+          {diets?.map((diet, index) => {
+            return (
+              <ListItem
+                key={index}
+                disableGutters
+                sx={{ padding: 0, cursor: 'pointer' }}
+                onClick={() => {
+                  setSelectedDiet(diet);
+                  setShowModal(true);
+                  console.log('show!');
+                }}>
+                <Card
+                  variant='outlined'
+                  sx={{
+                    width: '100%',
+                    transition: '0.3s',
+                    '&:hover': {
+                      boxShadow: 4, // Elevate card on hover
+                    },
+                  }}>
+                  <CardContent>
+                    <Typography
+                      variant='h6'
+                      component='div'>
+                      {diet.first_name}
+                    </Typography>
+                    <Typography
+                      variant='body2'
+                      color='text.secondary'>
+                      {diet.last_name}
+                    </Typography>
+                    <Typography
+                      variant='body2'
+                      color='text.secondary'>
+                      {diet.phone}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </ListItem>
+            );
+          })}
         </List>
       </div>
-      {showModal && selectedPatient ? (
-        <ModalPatient
-          selectedPatient={selectedPatient}
+      {showModal && selectedDiet ? (
+        <DietDetails
+          selectedDiet={selectedDiet}
           closeModal={setShowModal}
         />
       ) : null}
       {showAssigner ? (
-        <ModalAssign
+        <ModalDiet
           closeModal={setShowAssigner}
           current={patients}
         ></ModalAssign>
+          current={diets}></ModalDiet>
       ) : null}
     </>
   );
