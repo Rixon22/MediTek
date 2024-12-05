@@ -25,6 +25,10 @@ const routes = [
         {
             label: 'Citas',
             route: '/patients/appointments/'
+        },
+        {
+            label: 'Perfil',
+            route: '/patients/profile/'
         }
     ]
 ]

@@ -164,6 +164,50 @@ const deletePatient = (req, res) => {
     });
 };
 
+// Obtener a un paciente por ID con todos sus detalles
+const getPatientDetailsById = (req, res) => {
+    const { patient_id } = req.params;
+    const query = `
+        SELECT 
+            patients.id, 
+            patients.first_name, 
+            patients.last_name, 
+            patients.birth_date, 
+            patients.email, 
+            patients.phone,
+            patients.CURP,
+            GROUP_CONCAT(DISTINCT medical_conditions.name) AS conditions,
+            GROUP_CONCAT(DISTINCT allergies.name) AS allergies,
+            GROUP_CONCAT(DISTINCT treatments.description) AS treatments
+        FROM 
+            patients
+        LEFT JOIN 
+            patient_conditions ON patients.id = patient_conditions.patient_id
+        LEFT JOIN 
+            medical_conditions ON patient_conditions.condition_id = medical_conditions.id
+        LEFT JOIN 
+            patient_allergies ON patients.id = patient_allergies.patient_id
+        LEFT JOIN 
+            allergies ON patient_allergies.allergy_id = allergies.id
+        LEFT JOIN 
+            treatments ON patients.id = treatments.patient_id
+        WHERE 
+            patients.id = ?
+        GROUP BY 
+            patients.id
+    `;
+
+    db.get(query, [patient_id], (err, row) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+        if (!row) {
+            return res.status(404).json({ error: 'Paciente no encontrado' });
+        }
+        res.json(row);
+    });
+};
+
 // Exportar las funciones del controlador
 module.exports = {
     createPatient,
@@ -171,5 +215,6 @@ module.exports = {
     updatePatient,
     deletePatient,
     getPatients,
-    getPatientsByDoctor
+    getPatientsByDoctor,
+    getPatientDetailsById
 };

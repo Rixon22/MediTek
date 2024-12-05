@@ -21,6 +21,7 @@ router.post('/patients/details', authenticateToken, patientController.getPatient
 router.put('/patients/:id', authenticateToken, patientController.updatePatient); // Actualizar un paciente por ID
 router.delete('/patients/:id', authenticateToken, patientController.deletePatient); // Eliminar un paciente por ID
 router.post('/patients/doctor', authenticateToken, patientController.getPatientsByDoctor); // Obtener todos los pacientes de un doctor específico
+router.get('/patient/detail/:patient_id', authenticateToken, patientController.getPatientDetailsById); // Obtener todos los pacientes de un doctor específico por ID
 
 // Rutas para doctores (protegidas)
 router.post('/doctors/add', doctorController.createDoctor); // Crear un nuevo doctor
