@@ -6,160 +6,94 @@ import {
   Typography,
   Grid,
   TextField,
-  List,
-  ListItem,
-  ListItemText,
   Card,
   CardContent,
-  CardActions,
-  IconButton,
 } from '@mui/material';
-import { postRequest, getRequest } from '../../helpers/requestHandler';
 import PropTypes from 'prop-types';
-import URLS from '../../constants/url';
-import DeleteIcon from '@mui/icons-material/Delete';
 import styles from './ModalDiet.module.css';
+import { postRequest } from '../../helpers/requestHandler';
 import { retrieveSession } from '../../helpers/retrieveSession';
 import ShowError from '../../helpers/errorHandler';
 import SuccessHandler from '../../helpers/SuccessHandler/SuccessHandler';
+import URLS from '../../constants/url';
+
 function ModalDiet({ idPatient, closeModal }) {
   const [open] = useState(true);
-  const [meds, setMeds] = useState([]); // All medications from the backend
-  const [searchTerm, setSearchTerm] = useState(''); // Search input state
-  const [selectedMeds, setSelectedMeds] = useState([]);
-  const [description, setDescription] = useState('');
+  const [patients, setPatients] = useState([]);
+  const [selectedPatient, setSelectedPatient] = useState(null);
+  const [selectedDish, setSelectedDish] = useState(null);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [description, setDescription] = useState('');
+  const [errorFields, setErrorFields] = useState({});
+  const [time, setTime] = useState('');
+  const [dishes] = useState([
+    { id: 1, name: 'Sopa de Lentejas', description: 'Sopa con lentejas' },
+    { id: 2, name: 'Ensalada', description: 'Ensalada Caesar' },
+  ]);
   const [error, setError] = useState(null);
   const [showError, setShowError] = useState(false);
-  const [errorFields, setErrorFields] = useState({});
 
-  const handleClose = () => {
-    closeModal(false);
-  };
+  const handleClose = () => closeModal(false);
 
   useEffect(() => {
-    const today = new Date().toISOString().split('T')[0];
-    setStartDate(today);
-
-    getRequest(URLS.dev + 'medications')
+    const userData = retrieveSession();
+    postRequest(URLS.dev + '/patients/doctor', { doctor_id: userData.user })
       .then((response) => {
-        const { data } = response;
-        console.log('meds', data);
-        setMeds([
-          {
-            id: 1,
-            name: 'Paracetamol',
-            descripcion: 'Caja con 12 tabletas 500mg',
-          },
-          {
-            id: 2,
-            name: 'Ibuprofeno',
-            descripcion: 'Caja con 12 tabletas 250mg',
-          },
-          {
-            id: 3,
-            name: 'Nafazolina',
-            descripcion: 'Gotero con 20ml',
-          },
-        ]);
+        setPatients(response.data);
       })
       .catch((error) => {
         console.error(error);
-        setError(error);
-        setShowError(true);
       });
   }, []);
 
-  // Add a medication to the selected list
-  const handleAddMed = (med) => {
-    if (!selectedMeds.some((m) => m.id === med.id)) {
-      setSelectedMeds((prev) => [...prev, { ...med, dose: '', frequency: '' }]);
-    } else {
-      setError({ message: '¡Este medicamento ya ha sido añadido!' });
-      setShowError(true);
-    }
-    console.log(selectedMeds);
+  const handleSelectPatient = (patient) => {
+    setSelectedPatient(patient);
   };
 
-  const handleRemoveMed = (medId) => {
-    setSelectedMeds((prev) => prev.filter((m) => m.id !== medId));
-  };
-
-  const handleInputChange = (medId, field, value) => {
-    setSelectedMeds((prev) =>
-      prev.map((med) => (med.id === medId ? { ...med, [field]: value } : med))
-    );
-  };
-
-  // Filter medications based on the search term
-  const filteredMeds = meds.filter((med) =>
-    med.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const validateBeforeSend = () => {
-    const errors = {};
-
-    if (!description) {
-      errors.description = 'La descripción es requerida!';
-    }
-    if (!startDate) {
-      errors.startDate = 'La fecha de inicio es requerida!';
-    }
-    if (!endDate) {
-      errors.endDate = 'La fecha de término es requerida!';
-    }
-    if (!selectedMeds.length) {
-      setError({ message: 'No se ha seleccionado ningún medicamento!' });
-      setShowError(true);
-      return false;
-    }
-
-    setErrorFields(errors); // Highlight fields with errors
-    if (Object.keys(errors).length > 0) {
-      return false;
-    }
-    return true;
-  };
-
-  // Handle the assign button action
   const handleAssign = () => {
-    const session = retrieveSession();
-    const payload = {
-      treatment: {
-        patient_id: idPatient,
-        doctor_id: session.user,
-        description: description,
-        start_date: startDate,
-        end_date: endDate,
-      },
-      medications: selectedMeds.map(({ id, dose, frequency }) => ({
-        medication_id: id,
-        dose: dose,
-        frequency: frequency,
-      })),
-    };
-    if (!validateBeforeSend()) {
+    if (!selectedPatient) {
+      setError({ message: 'Seleccione un paciente' });
+      setShowError(true);
       return;
     }
-    postRequest(
-      URLS.dev + 'treatment-medications/add-treatment-with-medications',
-      payload
-    )
+
+    if (!description) {
+      setError({ message: 'Ingrese una descripción para la dieta' });
+      setShowError(true);
+      return;
+    }
+
+    if (!time) {
+      setError({ message: 'Seleccione la hora de la dieta' });
+      setShowError(true);
+      return;
+    }
+
+    const payload = {
+      patient_id: selectedPatient.id,
+      doctor_id: retrieveSession().user,
+      description,
+      time,
+      dishes: dishes.map((dish) => ({
+        dish_id: dish.id,
+        name: dish.name,
+      })),
+    };
+
+    postRequest(URLS.dev + '/assign-diet', payload)
       .then((response) => {
-        console.log('Assigned successfully:', response);
-        const { data } = response;
-        console.log('server sent:', data);
         const successManager = new SuccessHandler(
-          'Tratamiento Asignado!',
-          'Se ha registrado el tratamiento correctamente.'
+          'Dieta Asignada!',
+          'La dieta se asignó correctamente.'
         );
         successManager.show();
+        handleClose();
       })
       .catch((error) => {
         setError(error);
         setShowError(true);
-        console.error('Error assigning treatment:', error);
+        console.error('Error assigning diet:', error);
       });
   };
 
@@ -190,131 +124,80 @@ function ModalDiet({ idPatient, closeModal }) {
             variant='h6'
             component='h2'
             gutterBottom>
-            Asignar Tratamiento
+            Asignar Dieta
           </Typography>
-          <div className={styles.notContainer}>
+          <Grid
+            container
+            spacing={3}>
+            {/* Patient List */}
             <Grid
-              container
-              spacing={3}>
-              {/* Left Column: Search and List */}
-              <Grid
-                item
-                xs={6}>
-                <TextField
-                  fullWidth
-                  margin='normal'
-                  label='Buscar medicamento'
-                  variant='outlined'
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-                <List
-                  sx={{
-                    maxHeight: '50vh',
-                    overflow: 'auto',
-                    border: '1px solid lightgray',
-                    borderRadius: 1,
-                    mt: 2,
-                  }}>
-                  {filteredMeds.map((med) => (
-                    <ListItem
-                      key={med.id}
-                      button
-                      sx={{ cursor: 'pointer', userSelect: 'none' }}
-                      onClick={() => handleAddMed(med)}>
-                      <ListItemText
-                        primary={med.name}
-                        secondary={med.descripcion}
-                      />
-                    </ListItem>
-                  ))}
-                </List>
-              </Grid>
+              item
+              xs={6}>
+              <Box
+                sx={{
+                  maxHeight: '50vh',
+                  overflow: 'auto',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 2,
+                }}>
+                {patients?.map((patient) => (
+                  <Card
+                    key={patient.id}
+                    variant='outlined'
+                    onClick={() => handleSelectPatient(patient)}
+                    sx={{
+                      border:
+                        selectedPatient?.id === patient.id
+                          ? '2px solid blue'
+                          : '',
+                      cursor: 'pointer',
+                    }}>
+                    <CardContent>
+                      <Typography variant='h6'>
+                        {patient.first_name} {patient.last_name}
+                      </Typography>
+                      <Typography>{patient.phone}</Typography>
+                    </CardContent>
+                  </Card>
+                ))}
+              </Box>
+            </Grid>
 
-              {/* Right Column: Selected Medications */}
-              <Grid
-                item
-                xs={6}>
-                <Typography
-                  variant='subtitle1'
-                  gutterBottom>
-                  Medicamentos seleccionados:
-                </Typography>
+            {/* Dishes and Time Input */}
+            <Grid
+              item
+              xs={6}>
+              {selectedPatient && (
                 <Box
                   sx={{
-                    maxHeight: '50vh',
-                    overflow: 'auto',
                     display: 'flex',
                     flexDirection: 'column',
                     gap: 2,
                   }}>
-                  {selectedMeds.map((med) => (
+                  {dishes.map((dish) => (
                     <Card
-                      key={med.id}
+                      key={dish.id}
                       variant='outlined'>
                       <CardContent>
-                        <Typography variant='h6'>{med.name}</Typography>
-                        <Typography
-                          variant='body2'
-                          color='text.secondary'
-                          gutterBottom>
-                          {med.descripcion}
+                        <Typography variant='h6'>{dish.name}</Typography>
+                        <Typography variant='body2'>
+                          {dish.description}
                         </Typography>
-                        <Grid
-                          container
-                          spacing={1}>
-                          <Grid
-                            item
-                            xs={6}>
-                            <TextField
-                              fullWidth
-                              label='Dosis'
-                              variant='outlined'
-                              required={true}
-                              sx={{ margin: 0, height: '25px' }}
-                              value={med.dose}
-                              onChange={(e) =>
-                                handleInputChange(
-                                  med.id,
-                                  'dose',
-                                  e.target.value
-                                )
-                              }
-                            />
-                          </Grid>
-                          <Grid
-                            item
-                            xs={6}>
-                            <TextField
-                              fullWidth
-                              label='Frecuencia'
-                              variant='outlined'
-                              sx={{ margin: 0, height: '25px' }}
-                              value={med.frequency}
-                              onChange={(e) =>
-                                handleInputChange(
-                                  med.id,
-                                  'frequency',
-                                  e.target.value
-                                )
-                              }
-                            />
-                          </Grid>
-                        </Grid>
                       </CardContent>
-                      <CardActions>
-                        <IconButton
-                          color='error'
-                          onClick={() => handleRemoveMed(med.id)}>
-                          <DeleteIcon />
-                        </IconButton>
-                      </CardActions>
                     </Card>
                   ))}
+                  <TextField
+                    type='time'
+                    label='Hora de la Dieta'
+                    variant='outlined'
+                    value={time}
+                    onChange={(e) => setTime(e.target.value)}
+                  />
                 </Box>
-              </Grid>
+              )}
             </Grid>
-          </div>
+          </Grid>
           <Grid
             container
             spacing={2}>
@@ -374,13 +257,9 @@ function ModalDiet({ idPatient, closeModal }) {
               />
             </Grid>
           </Grid>
+
           {/* Buttons */}
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-              mt: 3,
-            }}>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
             <Button
               onClick={handleAssign}
               variant='contained'
@@ -392,19 +271,19 @@ function ModalDiet({ idPatient, closeModal }) {
               onClick={handleClose}
               variant='contained'
               color='secondary'>
-              Close
+              Cerrar
             </Button>
           </Box>
         </Box>
       </Modal>
 
-      {showError ? (
+      {showError && (
         <ShowError
           error={error}
           open={showError}
           onClose={() => setShowError(false)}
         />
-      ) : null}
+      )}
     </div>
   );
 }

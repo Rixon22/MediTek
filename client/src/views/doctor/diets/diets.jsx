@@ -54,12 +54,10 @@ export default function Diets() {
         <Box
           sx={{
             flex: 1,
-          }}
-        >
+          }}>
           <Typography
-            variant="h5"
-            component="div"
-          >
+            variant='h5'
+            component='div'>
             Control de Dietas
           </Typography>
         </Box>
@@ -72,26 +70,23 @@ export default function Diets() {
               color: '#ffffff',
             },
           }}
-          onClick={() => setShowAssigner(true)}
-        >
+          onClick={() => setShowAssigner(true)}>
           Añadir Nuevo
         </Button>
-        </Button>{' '}
       </div>
       <div className={styles.listContainer}>
         <List sx={{ width: '100%', mx: 'auto' }}>
-          {patients?.map((patient, index) => (
+          {diets?.map((diet, index) => (
             <ListItem
               key={index}
               disableGutters
               sx={{ padding: 0, cursor: 'pointer' }}
               onClick={() => {
-                setSelectedPatient(patient);
+                setSelectedDiet(diet);
                 setShowModal(true);
-              }}
-            >
+              }}>
               <Card
-                variant="outlined"
+                variant='outlined'
                 sx={{
                   width: '100%',
                   margin: 1,
@@ -100,32 +95,24 @@ export default function Diets() {
                   '&:hover': {
                     boxShadow: 4,
                   },
-                }}
-              >
+                }}>
                 <CardContent>
                   <Typography
-                    variant="h6"
-                    component="div"
+                    variant='h6'
+                    component='div'
                     sx={{
                       textOverflow: 'ellipsis',
                       whiteSpace: 'nowrap',
                       overflow: 'hidden',
-                    }}
-                  >
-                    {patient.first_name}
+                    }}>
+                    {diet.description}
                   </Typography>
                   <Typography
-                    variant="body2"
-                    color="text.secondary"
-                  >
-                    {patient.last_name}
-                  </Typography>
+                    variant='body2'
+                    color='text.secondary'></Typography>
                   <Typography
-                    variant="body2"
-                    color="text.secondary"
-                  >
-                    {patient.phone}
-                  </Typography>
+                    variant='body2'
+                    color='text.secondary'></Typography>
                 </CardContent>
               </Card>
             </ListItem>
@@ -182,8 +169,6 @@ export default function Diets() {
       {showAssigner ? (
         <ModalDiet
           closeModal={setShowAssigner}
-          current={patients}
-        ></ModalAssign>
           current={diets}></ModalDiet>
       ) : null}
     </>
